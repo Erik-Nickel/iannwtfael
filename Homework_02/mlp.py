@@ -3,8 +3,8 @@ from functools import reduce
 
 
 # TODO: square error is not signed :(
-def squared_error(output, expected):
-    return output - expected
+def squared_error(expected, output):
+    return expected - output
     # return np.square(expected - output)
 
 

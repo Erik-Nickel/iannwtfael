@@ -27,3 +27,6 @@ class LogicalGateMLP(MLP):
         result = np.array([np.round(accuracy[0]), loss[0]])
         print('rounded result: ', result)
         return result
+
+    def classify(self, x, y):
+        return np.round(self.forward_step(np.array([x, y]))[0])
