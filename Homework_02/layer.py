@@ -2,14 +2,13 @@ import numpy as np
 from perceptron import Perceptron
 
 
-def sig(x):
-    import math
-    return 1 / (1 + math.exp(-x))
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
 
 
 class Layer:
 
-    def __init__(self, input_units, layer_size, alpha=1, activation_function=sig):
+    def __init__(self, input_units, layer_size, alpha=1, activation_function=sigmoid):
         self.__perceptrons = [Perceptron(input_units, alpha, activation_function) for _ in range(layer_size)]
 
     def forward_step(self, x):

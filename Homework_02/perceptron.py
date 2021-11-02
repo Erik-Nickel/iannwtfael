@@ -4,7 +4,7 @@ import numpy as np
 class Perceptron:
 
     def __init__(self, input_units, alpha, activation_function):
-        self.__weights = np.random.rand(input_units + 1)
+        self.__weights = np.random.randn(input_units + 1)
         self.__alpha = alpha
         self.__activation_function = activation_function
 
