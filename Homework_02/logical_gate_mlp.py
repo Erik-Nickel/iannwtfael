@@ -9,23 +9,14 @@ class LogicalGateMLP(MLP):
         super().__init__(Layer(2, 4), Layer(4, 1))
 
     def train(self, data, epochs):
-        averages = []
-        for epoch in range(epochs):
-            print('epoch: ', epoch)
-            for d in data:
-                # print("data: ", d)
-                results = [self.__training_step(d[0], d[1])]
-                # print('results: ', results)
-                av = np.average(results, 0)
-                averages.append(av)
-                # print('averages: ', averages)
+        averages = [np.average([self.__training_step(d[0], d[1]) for d in data], 0) for _ in range(epochs)]
+        print("avg:", averages)
         return averages
 
     def __training_step(self, input_vector, expected_result):
         (accuracy, loss) = self.backprop_step(input_vector, expected_result)
-        print("(accuracy, loss) : ", (accuracy, loss))
-        result = np.array([np.round(accuracy[0]), loss[0]])
-        print('rounded result: ', result)
+        result = np.array([accuracy[0], loss[0]])
+        # print('[accuracy, loss]: ', result)
         return result
 
     def classify(self, x, y):

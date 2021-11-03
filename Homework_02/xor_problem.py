@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from logical_gate_mlp import LogicalGateMLP
 
 
@@ -15,8 +16,16 @@ data = list(zip(inputs, labels))
 
 if __name__ == '__main__':
     mlp = LogicalGateMLP()
-    print("first try: ", mlp.forward_step(np.array([1, 0])))
-    print("first try: ", mlp.forward_step(np.array([1, 1])))
-    mlp.train(data, 1000)
-    print("after training", mlp.forward_step(np.array([1, 0])))
-    print("after training", mlp.forward_step(np.array([1, 1])))
+    for x in [1, 0]:
+        for y in [0, 1]:
+            print(f"{x} xor {y} = {mlp.classify(x, y)}")
+    accuracy_loss = mlp.train(data, 1000)
+    for x in [1, 0]:
+        for y in [0, 1]:
+            print(f"{x} xor {y} = {mlp.classify(x, y)}")
+
+    # TODO: prettify (labels dont work)
+    plt.plot(range(1000), np.array(accuracy_loss).T[0], label='accuracy')
+    plt.plot(range(1000), np.array(accuracy_loss).T[1], label='loss')
+    # x axe = epochs
+    plt.show()
