@@ -6,19 +6,16 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 
-# TODO sigmoid is never negative :(
-def sigmoid_prime(x):
+def backprop_sigmoid(x):
     return x * (1 - x)
-    # sig_x = sigmoid(x)
-    # return sig_x * (1 - sig_x)
 
 
 class Layer:
 
     def __init__(self, input_units, layer_size, alpha=1, activation_function=sigmoid,
-                 activation_function_prime=sigmoid_prime):
+                 backprop_function=backprop_sigmoid):
         self.__perceptrons = [Perceptron(input_units, alpha, activation_function) for _ in range(layer_size)]
-        self.__activation_function_prime = activation_function_prime
+        self.__backprop_function = backprop_function
 
     def forward_step(self, x):
         return np.array([p.forward_step(x) for p in self.__perceptrons])
@@ -30,5 +27,5 @@ class Layer:
     def weight_matrix(self):
         return np.asarray([p.weights() for p in self.__perceptrons]).T
 
-    def activation_function_prime(self, x):
-        return self.__activation_function_prime(x)
+    def backprop_function(self, x):
+        return self.__backprop_function(x)
