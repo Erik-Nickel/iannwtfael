@@ -97,7 +97,6 @@ train_loss, _ = test(model, train_dataset, cross_entropy_loss)
 train_losses.append(train_loss)
 
 for epoch in range(num_epochs):
-    print(f'Epoch: {str(epoch)} starting with accuracy {test_accuracies[-1]}')
     epoch_loss_agg = []
     for input, target in train_dataset:
         train_loss = train_step(model, input, target, cross_entropy_loss, optimizer)
