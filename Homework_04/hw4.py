@@ -12,7 +12,7 @@ print(df.head())
 print(df.mean())
 print(df.max() -df.min())
 
-threshold = df.quality.mean()
+threshold = df.quality.median()
 #df.quality = np.where(df.quality > df.quality.mean(),np.int64(1),np.int64(0)) #df.quality.median()
 target = df.pop('quality')
 
@@ -36,7 +36,7 @@ def make_binary(target):
 def prepare_wine(wine):
     wine = wine.map(lambda point, label: (point, make_binary(label)))
     wine = wine.shuffle(100000)
-    wine = wine.batch(8)
+    wine = wine.batch(500)
     return wine
 
 
@@ -128,15 +128,18 @@ for epoch in range(num_epochs):
         epoch_loss_agg.append(train_loss)
     train_losses.append(tf.reduce_mean(epoch_loss_agg))
 
-    test_loss, test_accuracy = test(model, test_dataset, cross_entropy_loss)
+    test_loss, test_accuracy = test(model, validation_dataset, cross_entropy_loss)
     test_losses.append(test_loss)
     test_accuracies.append(test_accuracy)
 
 
+test_loss, test_accuracy = test(model, test_dataset, cross_entropy_loss)
+test_losses.append(test_loss)
+test_accuracies.append(test_accuracy)
 
 plt.plot(train_losses, label="training")
-plt.plot(test_losses, label="test")
-plt.plot(test_accuracies, label="test accuracy")
+plt.plot(test_losses, label="test/validation")
+plt.plot(test_accuracies, label="test/validation accuracy")
 plt.xlabel("Training steps")
 plt.ylabel("Loss/Accuracy")
 plt.legend()
