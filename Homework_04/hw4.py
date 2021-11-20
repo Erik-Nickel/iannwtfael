@@ -1,19 +1,20 @@
 
 import numpy as np
 import pandas as pd
-#import seaborn as sns
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from tensorflow.keras.layers import Dense
 
+'''
+In the following script you see the import and trining of the Wine data set
+'''
 
-df = pd.read_csv('C:/Users/enick/Documents/1-University/master/ws21/IANNwTF/datasets/winequality-red.csv',sep = ";")
+df = pd.read_csv('winequality-red.csv',sep = ";")
 print(df.head())
-print(df.mean())
+print(df.describe())
 print(df.max() -df.min())
 
 threshold = df.quality.median()
-#df.quality = np.where(df.quality > df.quality.mean(),np.int64(1),np.int64(0)) #df.quality.median()
 target = df.pop('quality')
 
 
@@ -24,6 +25,7 @@ print("target:",target)
 df_train, df_validation, df_test = np.split(df.sample(frac=1, random_state=42),[int(.7*len(df)), int(.9*len(df))])
 target_train, target_validation, target_test = np.split(target.sample(frac=1, random_state=42),[int(.7*len(df)), int(.9*len(df))])
 
+print("df_train: ", df_train,": df_train",)
 train_dataset = tf.data.Dataset.from_tensor_slices((df_train.values, target_train.values))
 validation_dataset = tf.data.Dataset.from_tensor_slices((df_validation.values, target_validation.values))
 test_dataset = tf.data.Dataset.from_tensor_slices((df_test.values, target_test.values))
@@ -36,7 +38,7 @@ def make_binary(target):
 def prepare_wine(wine):
     wine = wine.map(lambda point, label: (point, make_binary(label)))
     wine = wine.shuffle(100000)
-    wine = wine.batch(500)
+    wine = wine.batch(8) # mini-batches
     return wine
 
 
@@ -56,7 +58,7 @@ class WineModel(tf.keras.Model):
     def __init__(self):
         super(WineModel, self).__init__()
         self.dense1 = Dense(16,kernel_regularizer='l2',bias_regularizer = 'l2',activity_regularizer= 'l2',activation=tf.nn.sigmoid) #kernel_regularizer='l2',bias_regularizer = 'l2',activity_regularizer= 'l2'
-        self.dense2 = Dense(16,kernel_regularizer='l2',bias_regularizer = 'l2',activity_regularizer= 'l2',activation=tf.nn.sigmoid)
+        self.dense2 = Dense(16,kernel_regularizer='l2',bias_regularizer = 'l2',activity_regularizer= 'l2',activation=tf.nn.sigmoid) # L2 Regulization
         self.out = Dense(1,kernel_regularizer='l2',bias_regularizer = 'l2',activity_regularizer= 'l2', activation=tf.nn.sigmoid)
 
     @tf.function
@@ -107,7 +109,7 @@ learning_rate = 0.1
 
 model = WineModel()
 cross_entropy_loss = tf.keras.losses.BinaryCrossentropy()
-optimizer = tf.keras.optimizers.Adam(learning_rate)
+optimizer = tf.keras.optimizers.Adam(learning_rate) # Adam optimizer
 
 train_losses = []
 test_losses = []
