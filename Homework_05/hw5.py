@@ -46,7 +46,7 @@ class FashionMNISTConvModel(tf.keras.Model):
         return self.out(self.dense1(self.global_pooling(
             self.conv_layer4(self.conv_layer3(self.pooling1(self.conv_layer2(self.conv_layer1(inputs))))))))
 
-
+@tf.function
 def train_step(model, input, target, loss_function, optimizer):
     # loss_object and optimizer_object are instances of respective tensorflow classes
     with tf.GradientTape() as tape:
