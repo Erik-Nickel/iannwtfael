@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tensorflow.keras.layers import Dense
 
-# train_ds, test_ds = tfds.load('genomics_ood', split=['train', 'test'], as_supervised=True)
+fargtrain_ds, test_ds = tfds.load('genomics_ood', split=['train', 'test'], as_supervised=True)
 
 
 def onehotify(tensor):
