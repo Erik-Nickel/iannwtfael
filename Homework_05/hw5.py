@@ -84,7 +84,6 @@ test_dataset = test_ds.apply(prepare_FashionMNIST_data)
 
 tf.keras.backend.clear_session()
 
-# For showcasing we only use a subset of the training and test data (generally use all of the available data!)
 
 ### Hyperparameters
 num_epochs = 10
