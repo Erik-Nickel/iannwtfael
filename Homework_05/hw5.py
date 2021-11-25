@@ -7,7 +7,7 @@ from tensorflow.keras.layers import MaxPool2D
 from tensorflow.keras.layers import GlobalAvgPool2D
 import matplotlib.pyplot as plt
 
-train_ds, test_ds = tfds.load('FashionFashionMNIST', split=['train', 'test'], as_supervised=True)
+train_ds, test_ds = tfds.load('FashionMNIST', split=['train', 'test'], as_supervised=True)
 
 def prepare_FashionMNIST_data(FashionMNIST):
     # convert data from uint8 to float32
