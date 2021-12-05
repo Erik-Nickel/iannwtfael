@@ -26,10 +26,6 @@ def prepare_genomics_odd(genomics_ood):
     return genomics_ood
 
 
-train_dataset = train_ds.apply(prepare_genomics_odd)
-test_dataset = test_ds.apply(prepare_genomics_odd)
-
-
 class BacteriaGeneModel(tf.keras.Model):
 
     def __init__(self):
@@ -75,6 +71,10 @@ def test(model, test_data, loss_function):
 
 tf.keras.backend.clear_session()
 
+train_ds, test_ds = tfds.load('genomics_ood', split=['train', 'test'], as_supervised=True)
+train_dataset = train_ds.apply(prepare_genomics_odd)
+test_dataset = test_ds.apply(prepare_genomics_odd)
+
 train_dataset = train_dataset.take(100000)
 test_dataset = test_dataset.take(1000)
 
@@ -97,7 +97,6 @@ train_loss, _ = test(model, train_dataset, cross_entropy_loss)
 train_losses.append(train_loss)
 
 for epoch in range(num_epochs):
-    print(f'Epoch: {str(epoch)} starting with accuracy {test_accuracies[-1]}')
     epoch_loss_agg = []
     for input, target in train_dataset:
         train_loss = train_step(model, input, target, cross_entropy_loss, optimizer)
