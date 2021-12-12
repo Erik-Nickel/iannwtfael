@@ -4,6 +4,33 @@ from tensorflow.keras.layers import Dense
 import matplotlib.pyplot as plt
 import numpy as np
 
+def integration_task(seq_len, num_samples):
+    # for num_samples times yield random signal of size seq_len
+    # and a target (sum of noise signal is > or < than 1)
+    target = 0
+    
+    for i in num_samples:
+        target = target + i
+        ran = np.random.normal(size=seq_len)
+
+    if np.sum(axis=target) > 0:
+        tar_check = 1
+        ran = np.expand_dims(ran,-1)
+        yield ran, tar_check 
+    else:
+        yield 1
+
+
+def my_integration_task():
+    
+    num_samples = 80000
+    seq_len = 25
+    
+    yield integration_task(seq_len, num_samples)
+
+dataset = tf.data.Dataset.from_generator(my_integration_task, output_signature = tf.TensorSpec([20,10],dtype=tf.float32))
+# ToDo: split data into training and test data
+
 
 def prepare_mnist_data(ds):
     return ds.batch(8).shuffle(1024).batch(32).prefetch(32)  # TODO finish!!!!
