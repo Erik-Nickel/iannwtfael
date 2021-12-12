@@ -60,9 +60,9 @@ class LstmModel(tf.keras.Model):
 
     def __init__(self):
         super(LstmModel, self).__init__()
-        units = 32
-        self.embedding = tf.keras.layers.Dense(16, activation='sigmoid')
-        # self.LSTM = LSTM(units=units, return_sequences=False)
+        units = 32  # TODO how many units are sufficient?
+        self.embedding = tf.keras.layers.Dense(16, activation='sigmoid')  # TODO probably not necessary?
+        # self.LSTM = LSTM(units=units, return_sequences=False)  # if it dose not work test with tensorflow implementation
         self.LSTM = LstmLayer(LstmCell(units), return_sequences=False)
         self.out = Dense(1, activation='sigmoid')
 
@@ -102,7 +102,7 @@ def test(model, test_data, loss_function):
 
 tf.keras.backend.clear_session()
 
-train_ds, test_ds = []  # TODO!!!!!
+train_ds, test_ds = []  # TODO add data set!!!!!
 train_dataset = train_ds.apply(prepare_mnist_data)
 test_dataset = test_ds.apply(prepare_mnist_data)
 
@@ -110,7 +110,7 @@ num_epochs = 10
 learning_rate = 0.1  # TODO parameter tuning!!!!
 
 model = LstmModel()
-loss = tf.keras.losses.MeanSquaredError()  # TODO: Loss Type ????
+loss = tf.keras.losses.BinaryCrossentropy()
 optimizer = tf.keras.optimizers.Adam(learning_rate)
 
 train_losses = []
