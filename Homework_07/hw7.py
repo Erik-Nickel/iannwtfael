@@ -1,5 +1,5 @@
 import tensorflow as tf
-from keras.layers import Dense, Activation, Concatenate
+from keras.layers import Dense, Activation, Concatenate, LSTM
 
 
 class LstmLayer(tf.keras.layers.Layer):
@@ -15,9 +15,9 @@ class LstmLayer(tf.keras.layers.Layer):
         hidden_states = tf.TensorArray(dtype=tf.float32, size=length)
         for t in tf.range(length):
             input_t = data[:, t, :]
-            state = self.cell(input_t, h_state, c_state, training)
+            h_state, c_state = self.cell(input_t, h_state, c_state, training)
             if self.return_sequences:
-                hidden_states.append(state)
+                hidden_states.write(t, h_state)
         if self.return_sequences:
             # transpose the sequence of hidden_states from TensorArray accordingly
             # (batch and time dimensions are otherwise switched after .stack())
@@ -44,6 +44,15 @@ class LstmCell(tf.keras.layers.Layer):
         i = self.input_gate(x_t_h_t)
         c_h = self.cell_state_candidates(x_t_h_t)
         o = self.output_gate(x_t_h_t)
-        c = f * c_t + i * c_h
+        c = (f * c_t) + (i * c_h)
         h = o * self.tanh_layer(c)
         return h, c
+
+
+input_shape = (2, 6, 16)
+hidden_dim = 3
+input_sequence = tf.random.uniform(shape=input_shape)
+simple_RNN_cell = LstmCell(hidden_dim)
+RNN = LstmLayer(simple_RNN_cell, return_sequences=True)
+output = RNN(input_sequence)
+print(f"The output of the RNN, which is the last hidden state is \n{output}\n\n")
