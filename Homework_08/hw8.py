@@ -1,21 +1,21 @@
 import tensorflow as tf
 import tensorflow_datasets as tfds
-from tensorflow.keras.layers import Dense, Conv2D, MaxPool2D, GlobalAvgPool2D, Conv2DTranspose, Flatten, Reshape
+from tensorflow.keras.layers import Dense, Conv2D, Conv2DTranspose, Flatten, Reshape, Rescaling
 import matplotlib.pyplot as plt
 import numpy as np
 
 
 def prepare_mnist_data(ds):
-    return ds.map(to_float32).map(normalize).map(set_target).map(add_noise).cache().shuffle(1000).batch(16).prefetch(20)
+    return ds.map(to_float32).map(set_target).map(add_noise).cache().shuffle(1000).batch(32).prefetch(32)
 
 
 def to_float32(value, target):
     return tf.cast(value, tf.float32), target
 
 
-# from range [0, 255] to [-1, 1]
+# from range [0, 255] to [-1, 1] or don with rescaling layer
 def normalize(value, target):
-    return (value / 128.) - 1., target
+    return (value / 127.5) - 1., target
 
 
 def set_target(value, target):
@@ -42,29 +42,32 @@ class DeNoiseEncoderModel(tf.keras.Model):
 
     def __init__(self):
         super(DeNoiseEncoderModel, self).__init__()
-        self.conv_layer1 = Conv2D(filters=64, kernel_size=3, padding='same', activation=tf.nn.relu)
+        self.scaling = Rescaling(1. / 255)
+        self.conv_layer1 = Conv2D(filters=128, kernel_size=3, padding='same', activation=tf.nn.relu)
         self.flatten = Flatten()  # or GlobalAvgPool2D()
         self.out = Dense(128, activation=tf.nn.relu)
 
     @tf.function
     def call(self, inputs):
-        return self.out(self.flatten(self.conv_layer1(inputs)))
+        return self.out(self.flatten(self.conv_layer1(self.scaling(inputs))))
 
 
 class DeNoiseDecoderModel(tf.keras.Model):
 
     def __init__(self):
         super(DeNoiseDecoderModel, self).__init__()
-        self.dense = Dense(50176, activation=tf.nn.relu)  # 28 * 28 * 64 = 50176
-        self.reshape = Reshape((28, 28, 64))
-        self.conv_t = Conv2DTranspose(filters=64, kernel_size=3, padding='same', activation=tf.nn.relu)
-        self.out = Conv2D(filters=1, kernel_size=3, padding='same', activation=tf.nn.sigmoid)
+        self.dense = Dense(100352, activation=tf.nn.relu)  # 28 * 28 * 128 = 100352
+        self.reshape = Reshape((28, 28, 128))
+        self.conv_t = Conv2DTranspose(filters=128, kernel_size=3, padding='same', activation=tf.nn.relu)
+        self.conv = Conv2D(filters=1, kernel_size=3, padding='same', activation=tf.nn.sigmoid)
+        self.out = Rescaling(255)
 
     @tf.function
     def call(self, inputs):
         x = self.dense(inputs)
         x = self.reshape(x)
         x = self.conv_t(x)
+        x = self.conv(x)
         x = self.out(x)
         return x
 
