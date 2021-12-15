@@ -18,7 +18,7 @@ def set_target(value, target):
 
 
 def add_noise(value, target):
-    return value + 2 * np.random.normal(loc=0., scale=1., size=value.shape), target
+    return value + 2 * np.random.normal(loc=0., scale=1., size=value.shape), target  # TODO: add noise to value
 
 
 class DeNoiseAutoEncoderModel(tf.keras.Model):
@@ -65,7 +65,6 @@ class DeNoiseDecoderModel(tf.keras.Model):
         self.dense = Dense(784, activation=tf.nn.relu)  # 7 * 7 * 16 = 784
         self.reshape = Reshape((7, 7, 16))
         self.conv_t1 = Conv2DTranspose(filters=16, kernel_size=2, strides=2, activation=tf.nn.relu)
-        self.conv_layer1 = Conv2D(filters=32, kernel_size=3, padding='same', activation=tf.nn.relu)
         self.conv_t2 = Conv2DTranspose(filters=32, kernel_size=2, strides=2, activation=tf.nn.relu)
         self.conv = Conv2D(filters=1, kernel_size=3, padding='same', activation=tf.nn.sigmoid)
         self.out = Rescaling(255)
@@ -75,7 +74,6 @@ class DeNoiseDecoderModel(tf.keras.Model):
         x = self.dense(inputs)
         x = self.reshape(x)
         x = self.conv_t1(x)
-        x = self.conv_layer1(x)
         x = self.conv_t2(x)
         x = self.conv(x)
         x = self.out(x)
@@ -88,7 +86,7 @@ train_ds, test_ds = tfds.load('MNIST', split=['train', 'test'], as_supervised=Tr
 train_dataset = train_ds.apply(prepare_mnist_data)
 test_dataset = test_ds.apply(prepare_mnist_data)
 
-num_epochs = 5
+num_epochs = 10
 learning_rate = 0.001
 
 model = DeNoiseAutoEncoderModel()
@@ -96,12 +94,14 @@ loss = tf.keras.losses.MeanSquaredError()
 optimizer = tf.keras.optimizers.Adam(learning_rate)
 model.compile(optimizer=optimizer, loss=loss)
 
-images = None
-for images, labels in test_dataset.take(1):
-    images = images
+images, lables = None, None
+for d in test_dataset.take(1):
+    images, lables = d
 
 for i in range(num_epochs):
     plt.imshow(images[0].numpy().astype("uint8")[:, :, 0], cmap='gray')
+    plt.show()
+    plt.imshow(lables[0].numpy().astype("uint8")[:, :, 0], cmap='gray')
     plt.show()
     x = model(images)
     plt.imshow(x[0].numpy().astype("uint8")[:, :, 0], cmap='gray')
@@ -109,6 +109,8 @@ for i in range(num_epochs):
     model.fit(train_dataset, epochs=1)
 
 plt.imshow(images[0].numpy().astype("uint8")[:, :, 0], cmap='gray')
+plt.show()
+plt.imshow(lables[0].numpy().astype("uint8")[:, :, 0], cmap='gray')
 plt.show()
 x = model(images)
 plt.imshow(x[0].numpy().astype("uint8")[:, :, 0], cmap='gray')
