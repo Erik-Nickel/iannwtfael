@@ -1,6 +1,6 @@
 import tensorflow as tf
 import tensorflow_datasets as tfds
-from tensorflow.keras.layers import Dense, Conv2D, Conv2DTranspose, Flatten, Reshape, Rescaling
+from tensorflow.keras.layers import Dense, Conv2D, MaxPool2D, Conv2DTranspose, Flatten, Reshape, Rescaling
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -13,17 +13,12 @@ def to_float32(value, target):
     return tf.cast(value, tf.float32), target
 
 
-# from range [0, 255] to [-1, 1] or don with rescaling layer
-def normalize(value, target):
-    return (value / 127.5) - 1., target
-
-
 def set_target(value, target):
     return value, value
 
 
 def add_noise(value, target):
-    return value, target  # TODO: add noise to value
+    return value + 2 * np.random.normal(loc=0., scale=1., size=value.shape), target
 
 
 class DeNoiseAutoEncoderModel(tf.keras.Model):
@@ -43,22 +38,35 @@ class DeNoiseEncoderModel(tf.keras.Model):
     def __init__(self):
         super(DeNoiseEncoderModel, self).__init__()
         self.scaling = Rescaling(1. / 255)
-        self.conv_layer1 = Conv2D(filters=128, kernel_size=3, padding='same', activation=tf.nn.relu)
-        self.flatten = Flatten()  # or GlobalAvgPool2D()
-        self.out = Dense(128, activation=tf.nn.relu)
+        self.conv_layer1 = Conv2D(filters=32, kernel_size=3, padding='same', activation=tf.nn.relu)
+        self.pooling1 = MaxPool2D(pool_size=2, strides=2)
+        self.conv_layer2 = Conv2D(filters=32, kernel_size=3, padding='same', activation=tf.nn.relu)
+        self.pooling2 = MaxPool2D(pool_size=2, strides=2)
+        self.conv_layer3 = Conv2D(filters=16, kernel_size=3, padding='same', activation=tf.nn.relu)
+        self.flatten = Flatten()
+        self.out = Dense(16, activation=tf.nn.relu)
 
     @tf.function
     def call(self, inputs):
-        return self.out(self.flatten(self.conv_layer1(self.scaling(inputs))))
+        x = self.scaling(inputs)
+        x = self.conv_layer1(x)
+        x = self.pooling1(x)
+        x = self.conv_layer2(x)
+        x = self.pooling2(x)
+        x = self.conv_layer3(x)
+        x = self.flatten(x)
+        return self.out(x)
 
 
 class DeNoiseDecoderModel(tf.keras.Model):
 
     def __init__(self):
         super(DeNoiseDecoderModel, self).__init__()
-        self.dense = Dense(100352, activation=tf.nn.relu)  # 28 * 28 * 128 = 100352
-        self.reshape = Reshape((28, 28, 128))
-        self.conv_t = Conv2DTranspose(filters=128, kernel_size=3, padding='same', activation=tf.nn.relu)
+        self.dense = Dense(784, activation=tf.nn.relu)  # 7 * 7 * 16 = 784
+        self.reshape = Reshape((7, 7, 16))
+        self.conv_t1 = Conv2DTranspose(filters=16, kernel_size=2, strides=2, activation=tf.nn.relu)
+        self.conv_layer1 = Conv2D(filters=32, kernel_size=3, padding='same', activation=tf.nn.relu)
+        self.conv_t2 = Conv2DTranspose(filters=32, kernel_size=2, strides=2, activation=tf.nn.relu)
         self.conv = Conv2D(filters=1, kernel_size=3, padding='same', activation=tf.nn.sigmoid)
         self.out = Rescaling(255)
 
@@ -66,35 +74,12 @@ class DeNoiseDecoderModel(tf.keras.Model):
     def call(self, inputs):
         x = self.dense(inputs)
         x = self.reshape(x)
-        x = self.conv_t(x)
+        x = self.conv_t1(x)
+        x = self.conv_layer1(x)
+        x = self.conv_t2(x)
         x = self.conv(x)
         x = self.out(x)
         return x
-
-
-@tf.function
-def train_step(model, input, target, loss_function, optimizer):
-    with tf.GradientTape() as tape:
-        prediction = model(input)
-        loss = loss_function(target, prediction)
-        gradients = tape.gradient(loss, model.trainable_variables)
-    optimizer.apply_gradients(zip(gradients, model.trainable_variables))
-    return loss
-
-
-def test(model, test_data, loss_function):
-    test_accuracy_aggregator = []
-    test_loss_aggregator = []
-    for (input, target) in test_data:
-        prediction = model(input)
-        sample_test_loss = loss_function(target, prediction)
-        sample_test_accuracy = np.argmax(target, axis=1) == np.argmax(prediction, axis=1)
-        sample_test_accuracy = np.mean(sample_test_accuracy)
-        test_loss_aggregator.append(sample_test_loss.numpy())
-        test_accuracy_aggregator.append(np.mean(sample_test_accuracy))
-    test_loss = tf.reduce_mean(test_loss_aggregator)
-    test_accuracy = tf.reduce_mean(test_accuracy_aggregator)
-    return test_loss, test_accuracy
 
 
 tf.keras.backend.clear_session()
@@ -103,40 +88,28 @@ train_ds, test_ds = tfds.load('MNIST', split=['train', 'test'], as_supervised=Tr
 train_dataset = train_ds.apply(prepare_mnist_data)
 test_dataset = test_ds.apply(prepare_mnist_data)
 
-num_epochs = 10
-learning_rate = 0.01  # TODO: Parameter tuning
+num_epochs = 5
+learning_rate = 0.001
 
 model = DeNoiseAutoEncoderModel()
-cross_entropy_loss = tf.keras.losses.MeanSquaredError()
+loss = tf.keras.losses.MeanSquaredError()
 optimizer = tf.keras.optimizers.Adam(learning_rate)
+model.compile(optimizer=optimizer, loss=loss)
 
-train_losses = []
-test_losses = []
-test_accuracies = []
+images = None
+for images, labels in test_dataset.take(1):
+    images = images
 
-test_loss, test_accuracy = test(model, test_dataset, cross_entropy_loss)
-test_losses.append(test_loss)
-test_accuracies.append(test_accuracy)
+for i in range(num_epochs):
+    plt.imshow(images[0].numpy().astype("uint8")[:, :, 0], cmap='gray')
+    plt.show()
+    x = model(images)
+    plt.imshow(x[0].numpy().astype("uint8")[:, :, 0], cmap='gray')
+    plt.show()
+    model.fit(train_dataset, epochs=1)
 
-train_loss, _ = test(model, train_dataset, cross_entropy_loss)
-train_losses.append(train_loss)
-
-for epoch in range(num_epochs):
-    print(f'Epoch: {str(epoch)} starting with accuracy {test_accuracies[-1]}')
-    epoch_loss_agg = []
-    for input, target in train_dataset:
-        train_loss = train_step(model, input, target, cross_entropy_loss, optimizer)
-        epoch_loss_agg.append(train_loss)
-    train_losses.append(tf.reduce_mean(epoch_loss_agg))
-    test_loss, test_accuracy = test(model, test_dataset, cross_entropy_loss)
-    test_losses.append(test_loss)
-    test_accuracies.append(test_accuracy)
-
-plt.figure()
-plt.plot(train_losses, label="training")
-plt.plot(test_losses, label="test")
-plt.plot(test_accuracies, label="test accuracy")
-plt.xlabel("Training steps")
-plt.ylabel("Loss/Accuracy")
-plt.legend()
+plt.imshow(images[0].numpy().astype("uint8")[:, :, 0], cmap='gray')
+plt.show()
+x = model(images)
+plt.imshow(x[0].numpy().astype("uint8")[:, :, 0], cmap='gray')
 plt.show()
