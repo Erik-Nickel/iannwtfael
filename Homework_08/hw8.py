@@ -64,8 +64,8 @@ class DeNoiseDecoderModel(tf.keras.Model):
         super(DeNoiseDecoderModel, self).__init__()
         self.dense = Dense(784, activation=tf.nn.relu)  # 7 * 7 * 16 = 784
         self.reshape = Reshape((7, 7, 16))
-        self.conv_t1 = Conv2DTranspose(filters=16, kernel_size=2, strides=2, activation=tf.nn.relu)
-        self.conv_t2 = Conv2DTranspose(filters=32, kernel_size=2, strides=2, activation=tf.nn.relu)
+        self.conv_t1 = Conv2DTranspose(filters=16, kernel_size=3, padding='same', strides=2, activation=tf.nn.relu)
+        self.conv_t2 = Conv2DTranspose(filters=32, kernel_size=3, padding='same', strides=2, activation=tf.nn.relu)
         self.conv = Conv2D(filters=1, kernel_size=3, padding='same', activation=tf.nn.sigmoid)
         self.out = Rescaling(255)
 
