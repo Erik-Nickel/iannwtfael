@@ -84,12 +84,14 @@ class CandleGenerator(tf.keras.Model):
         return x
 
 
-def train(generator, discriminator, dataset, num_epochs=10, batch_size=32,
+def train(generator, discriminator, dataset, num_epochs=10,
           discriminator_optimizer=tf.keras.optimizers.Adam(0.01),
           generator_optimizer=tf.keras.optimizers.Adam(0.01)):
     for epoch in range(num_epochs):
+        print('epoch: ', epoch)
         for data in dataset:
             with tf.GradientTape() as generator_tape, tf.GradientTape() as discriminator_tape:
+                batch_size = data.get_shape()[0]
                 fake_data = generator(tf.random.normal([batch_size, generator.input_size]))
                 fake_data_pred = discriminator(fake_data)
                 real_data_pred = discriminator(data)
@@ -127,6 +129,6 @@ discriminator = CandleDiscriminator()
 train(generator, discriminator, train_dataset)
 
 # TODO: visualize examples
-for d in generator(test_dataset.take(1)):
+for d in generator(tf.random.normal([32, generator.input_size])):
     plt.imshow(d[0].numpy().astype("uint8")[:, :, 0], cmap='gray')
     plt.show()
