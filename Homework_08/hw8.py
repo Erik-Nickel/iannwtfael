@@ -18,7 +18,7 @@ def set_target(value, target):
 
 
 def add_noise(value, target):
-    return value + 2 * np.random.normal(loc=0., scale=1., size=value.shape), target  # TODO: add noise to value
+    return value + 2 * np.random.normal(loc=0., scale=1., size=value.shape), target
 
 
 class DeNoiseAutoEncoderModel(tf.keras.Model):
