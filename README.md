@@ -4,6 +4,6 @@ This repository contains homework assignments for the course IANNwTF WS21 by Arn
 
 If not else declared solutions will in the **master** branch.
 
-Have as much fun locking at our solutions as we had creating them
+Have as much fun looking at our solutions as we had creating them
 
 Ciao.
