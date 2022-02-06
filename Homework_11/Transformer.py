@@ -9,7 +9,7 @@ class Transformer(Layer):
         self.norm1 = LayerNormalization(epsilon=1e-6)
         self.norm2 = LayerNormalization(epsilon=1e-6)
         self.dropout = Dropout(0.1)
-        self.dense1 = Dense(256, activation=tf.nn.relu)  # 32-256
+        self.dense1 = Dense(128, activation=tf.nn.relu)  # 32-256
         self.dense2 = Dense(embedding_size)
         self.add1 = Add()
         self.add2 = Add()
