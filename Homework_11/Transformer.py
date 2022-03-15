@@ -17,7 +17,7 @@ class Transformer(Layer):
     def call(self, inputs, training):
         x = self.attention(inputs, inputs, inputs)
         x = self.dropout(x, training)
-        x = self.add([x, inputs])
+        x = self.add1([x, inputs])
         ln_out = self.norm1(x)
         x = self.dense1(ln_out)
         x = self.dense2(x)
