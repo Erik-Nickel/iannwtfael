@@ -23,7 +23,6 @@ class FoodRecommenderModelSelfAttention(Layer):  # tf.Module):
 
     def call(self, inputs, training=False):
         recipes, tar_recipe = inputs
-        recipes = self.pad(recipes)
         recipes = self.embedding(recipes)
         tar_recipe = self.embedding(tar_recipe)
         recipes_encoded = self.encoder(recipes, training)

@@ -26,6 +26,7 @@ class RecipeEmbedding(Layer):
 
     def call(self, inputs, training=False, positional=False):
         recipe_id, ing, other_features = inputs
+        # TODO: convert Ingredience list to multy hot
         # tf.reduce_max(tf.one_hot(labels, num_classes, dtype=tf.int32), axis=0)
         # x_id = self.flatten(x_id)
         x_id = self.recipy_id_embedding(recipe_id)

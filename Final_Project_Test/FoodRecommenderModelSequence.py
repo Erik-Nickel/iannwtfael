@@ -19,8 +19,7 @@ class FoodRecommenderModelSequence(Layer):  # tf.Module):
         self.out = Dense(self.num_ids)
 
     def call(self, inputs, training=False):
-        recipes = self.pad(inputs)
-        x = self.embedding(recipes, positional=True)
+        x = self.embedding(inputs, positional=True)
         x = self.encoder(x, training)
         x = self.pooling(x)  # or flatten
         # more layers?
