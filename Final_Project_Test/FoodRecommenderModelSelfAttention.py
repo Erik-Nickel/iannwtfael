@@ -1,7 +1,7 @@
 import tensorflow as tf
-from tensorflow.keras.layers import Dense, Flatten, Layer, Concatenate
-from Final_Project_Test.RecommenderEncoder import RecommenderEncoder
-from Final_Project_Test.RecipeEmbedding import RecipeEmbedding
+from tensorflow.keras.layers import Dense, Flatten, Layer, Concatenate, GlobalMaxPool1D
+from RecommenderEncoder import RecommenderEncoder
+from RecipeEmbedding import RecipeEmbedding
 
 
 class FoodRecommenderModelSelfAttention(Layer):  # tf.Module):
@@ -13,10 +13,11 @@ class FoodRecommenderModelSelfAttention(Layer):  # tf.Module):
         self.max_seq_len = 20
         self.num_ids = 100000
         self.embedding = RecipeEmbedding(id_embedding_size=32, num_ids=self.num_ids, ingredient_embedding_size=128,
-                                         other_features_embedding_size=16)
+                                         other_features_embedding_size=16, sequence_length=self.max_seq_len)
         self.encoder = RecommenderEncoder(self.embedding.emb_size())
-        self.flatten1 = Flatten()
+        #self.flatten1 = Flatten()
         self.flatten2 = Flatten()
+        self.pooling = GlobalMaxPool1D()
         self.concat = Concatenate()
         self.out = Dense(1)
 
@@ -26,7 +27,8 @@ class FoodRecommenderModelSelfAttention(Layer):  # tf.Module):
         recipes = self.embedding(recipes)
         tar_recipe = self.embedding(tar_recipe)
         recipes_encoded = self.encoder(recipes, training)
-        recipes_encoded = self.flatten1(recipes_encoded)
+        #recipes_encoded = self.flatten1(recipes_encoded)
+        recipes_encoded = self.pooling(recipes_encoded)
         tar_recipe = self.flatten2(tar_recipe)
         x = self.concat([tar_recipe, recipes_encoded])
         # more layers?

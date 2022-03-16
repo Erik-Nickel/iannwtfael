@@ -1,6 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Layer
-from Final_Project_Test.TransformerLayer import TransformerLayer
+from TransformerLayer import TransformerLayer
 
 
 class RecommenderEncoder(Layer):

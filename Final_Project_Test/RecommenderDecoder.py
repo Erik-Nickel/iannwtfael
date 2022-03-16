@@ -1,6 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Layer, LayerNormalization, Add, Dropout, MultiHeadAttention
-from Final_Project_Test.TransformerLayer import TransformerLayer
+from TransformerLayer import TransformerLayer
 
 
 class RecommenderDecoder(Layer):
