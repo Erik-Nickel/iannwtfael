@@ -23,6 +23,7 @@ class RecipeEmbedding(Layer):
         self.other_features_embedding = Dense(other_features_embedding_size)
         self.concat = Concatenate()
         self.out = Dense(output_size)
+        # TODO: output functions for dense
 
     def call(self, inputs, training=False, positional=False):
         recipe_id, ing, other_features = inputs

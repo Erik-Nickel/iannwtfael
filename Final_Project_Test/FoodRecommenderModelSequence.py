@@ -6,12 +6,12 @@ from RecipeEmbedding import RecipeEmbedding
 
 class FoodRecommenderModelSequence(Layer):  # tf.Module):
 
-    def __init__(self, items_count=100000, seq_len=20):
+    def __init__(self, recipe_count, seq_len):
         super(FoodRecommenderModelSequence, self).__init__()
         self.loss = tf.keras.losses.MeanSquaredError()
         self.optimizer = tf.keras.optimizers.Adam(learning_rate=0.01)
         self.max_seq_len = seq_len
-        self.num_ids = items_count
+        self.num_ids = recipe_count
         self.embedding = RecipeEmbedding(id_embedding_size=32, num_ids=self.num_ids, ingredient_embedding_size=128,
                                          other_features_embedding_size=16, sequence_length=self.max_seq_len)
         self.encoder = RecommenderEncoder(self.embedding.emb_size())
