@@ -1,5 +1,6 @@
 
 import pandas as pd
+import numpy as np
 
 class DatasetPreprossesing():
 
@@ -35,9 +36,13 @@ class DatasetPreprossesing():
 
         omni_raw.to_csv('data_pp.csv')
         
-        self.num_inter = omni_raw.value_counts('user_id').to_numpy()[1]
+        self.num_inter = omni_raw.value_counts('user_id',sort = False)
         print(self.num_inter)
     
+    def gen(self):
+        pass
+
+
 
 new = DatasetPreprossesing()
 new.preprocessing()
