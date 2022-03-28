@@ -1,18 +1,13 @@
-
+import tensorflow as tf
 import pandas as pd
 import numpy as np
 
 class DatasetPreprossesing():
-
-
+    
     def __init__(self) -> None:
         pass
     
     def preprocessing(self,dataset1 = '../../data/RAW_interactions.csv',dataset2 = '../../data/RAW_recipes.csv', dataset3 = '../../data/PP_recipes.csv'):
-
-
-
-
         inter_raw = pd.read_csv(dataset1)
         recipes_raw = pd.read_csv(dataset2)
         recipies_pp = pd.read_csv(dataset3)
@@ -36,13 +31,23 @@ class DatasetPreprossesing():
 
         omni_raw.to_csv('data_pp.csv')
         
-        self.num_inter = omni_raw.value_counts('user_id',sort = False)
+        self.num_inter = omni_raw['user_id'].value_counts(sort = False).to_numpy()
         print(self.num_inter)
+        print(omni_raw['user_id'].value_counts(sort = False))
+     
+
+        
     
-    def gen(self):
-        pass
+    def genData(self,):
+        skipRows = 0
+        n = 0
+        while n <5: 
+            readRows = self.num_inter[n]
+            data = pd.read_csv('data_pp.csv',skiprows=skipRows + 1 , nrows=readRows, header = None, names = ["nothing",'recipe_id','user_id','recipe_features','ing_ids']).reset_index()
+            skipRows += readRows
+            n += 1
+            yield data
+        
 
 
 
-new = DatasetPreprossesing()
-new.preprocessing()
