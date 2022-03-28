@@ -28,6 +28,7 @@ class DatasetPreprossesing():
         omni_raw = omni_raw.loc[omni_raw['user_id'].isin(counts.index[counts >= 6])]
 
         omni_raw = omni_raw.sort_values(['user_id','date']).reset_index()
+        omni_raw.pop('date')
 
         omni_raw.to_csv('data_pp.csv')
         
@@ -43,7 +44,7 @@ class DatasetPreprossesing():
         n = 0
         while n <5: 
             readRows = self.num_inter[n]
-            data = pd.read_csv('data_pp.csv',skiprows=skipRows + 1 , nrows=readRows, header = None, names = ["nothing",'recipe_id','user_id','recipe_features','ing_ids']).reset_index()
+            data = pd.read_csv('data_pp.csv',skiprows=skipRows + 1 , nrows=readRows, header = None, names = ['recipe_id','user_id','recipe_features','ing_ids']).reset_index()
             skipRows += readRows
             n += 1
             yield data

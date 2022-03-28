@@ -11,8 +11,7 @@ new.preprocessing()
 newnew = FoodRatingDataset()
 
 for i in new.genData():
-    print(i.ing_ids)
-    lala = newnew(i.recipe_id,i.ing_ids,i.recipe_features)
+    lala = newnew(id = i.recipe_id.to_numpy(), ing = i.ing_ids.to_numpy(), ofe = i.recipe_features.to_numpy())
 
 
 
