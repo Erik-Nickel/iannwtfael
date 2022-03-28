@@ -1,6 +1,7 @@
 import tensorflow as tf
 import pandas as pd
 import numpy as np
+import ast
 
 class DatasetPreprossesing():
     
@@ -44,7 +45,8 @@ class DatasetPreprossesing():
         n = 0
         while n <5: 
             readRows = self.num_inter[n]
-            data = pd.read_csv('data_pp.csv',skiprows=skipRows + 1 , nrows=readRows, header = None, names = ['recipe_id','user_id','recipe_features','ing_ids']).reset_index()
+            data = pd.read_csv('data_pp.csv',skiprows=skipRows + 1 , nrows=readRows, header = None, quotechar='"', sep=',', converters={'recipe_features':ast.literal_eval,'ing_ids':ast.literal_eval}, names = ['recipe_id','user_id','recipe_features','ing_ids']).reset_index()
+            print(data.ing_ids)
             skipRows += readRows
             n += 1
             yield data

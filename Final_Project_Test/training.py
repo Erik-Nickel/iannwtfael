@@ -11,8 +11,11 @@ new.preprocessing()
 newnew = FoodRatingDataset()
 
 for i in new.genData():
+    print(i.recipe_id)
+    print(i.ing_ids)
+    print(i.recipe_id)
     lala = newnew(id = i.recipe_id.to_numpy(), ing = i.ing_ids.to_numpy(), ofe = i.recipe_features.to_numpy())
-
+    break
 
 
 #ids, ing, ofe = tf.keras.Input(shape=[20]), tf.keras.Input(shape=[20, 6000]), tf.keras.Input(shape=[20, 3])
