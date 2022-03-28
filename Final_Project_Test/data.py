@@ -7,7 +7,7 @@ class DatasetPreprossesing():
     def __init__(self) -> None:
         pass
     
-    def preprocessing(dataset1 = '../../data/RAW_interactions.csv',dataset2 = '../../data/RAW_recipes.csv', dataset3 = '../../data/PP_recipes.csv'):
+    def preprocessing(self,dataset1 = '../../data/RAW_interactions.csv',dataset2 = '../../data/RAW_recipes.csv', dataset3 = '../../data/PP_recipes.csv'):
 
 
 
@@ -37,4 +37,4 @@ class DatasetPreprossesing():
     
 
 new = DatasetPreprossesing()
-new.preprocessing('../../data/RAW_interactions.csv','../../data/RAW_recipes.csv','../../data/PP_recipes.csv')
+new.preprocessing('RAW_interactions.csv','RAW_recipes.csv','PP_recipes.csv')
