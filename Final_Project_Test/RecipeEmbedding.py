@@ -21,7 +21,7 @@ class RecipeEmbedding(Layer):
         self.flatten = Flatten()
         self.ingredient_embedding = Dense(ingredient_embedding_size)
         self.other_features_embedding = Dense(other_features_embedding_size)
-        self.concat = Concatenate()
+        self.concat = Concatenate(axis=-1)
         self.out = Dense(output_size)
         # TODO: output functions for dense
 
@@ -32,11 +32,16 @@ class RecipeEmbedding(Layer):
         # x_id = self.flatten(x_id)
         x_id = self.recipy_id_embedding(recipe_id)
         if positional:
-            positions = tf.range(start=0, limit=self.sequence_length - 1)
+            positions = tf.range(start=0, limit=self.sequence_length)
             embedded_positions = self.position_embedding(positions)
+            print("x_id_pre:", x_id)
+            print("POS_emb:", embedded_positions)
             x_id = self.add([x_id, embedded_positions])
         x_ing = self.ingredient_embedding(ing)
         x_o = self.other_features_embedding(other_features)
+        print("x_id:",x_id)
+        print("x_ing:", x_ing)
+        print("x_o:", x_o)
         x = self.concat([x_id, x_ing, x_o])
         x = self.out(x)
         return x

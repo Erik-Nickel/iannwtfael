@@ -23,8 +23,8 @@ for i in new.genData():
 
 #ids, ing, ofe = tf.keras.Input(shape=[20]), tf.keras.Input(shape=[20, 6000]), tf.keras.Input(shape=[20, 3])
 
-x = FoodRecommenderModelSequence(recipe_count=NUM_RECIPES, seq_len=SEQ_LEN)(lala)
+rec = FoodRecommenderModelSequence(recipe_count=NUM_RECIPES, seq_len=SEQ_LEN)
 
-mod = keras.Model(lala, x)
+x = rec(lala)
 
-mod.summary()
+print(x)
