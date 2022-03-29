@@ -41,9 +41,9 @@ class DatasetPreprossesing():
 
         
     
-    def genData(self,):
-        skipRows = 1
-        readRows = 10
+    def genData(self,windowsSize = 10,stepSize = 1):
+        skipRows = stepSize 
+        readRows = windowsSize
         n = 0
         
         
