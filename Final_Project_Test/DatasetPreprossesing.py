@@ -34,8 +34,8 @@ class DatasetPreprossesing():
         omni_raw.to_csv('data_pp.csv')
         
         self.num_inter = omni_raw['user_id'].value_counts(sort = False).to_numpy()
-        print(self.num_inter)
-        print(omni_raw['user_id'].value_counts(sort = False))
+        #print(self.num_inter)
+        #print(omni_raw['user_id'].value_counts(sort = False))
      
 
         
@@ -46,7 +46,9 @@ class DatasetPreprossesing():
         while n <5: 
             readRows = self.num_inter[n]
             data = pd.read_csv('data_pp.csv',skiprows=skipRows + 1 , nrows=readRows, header = None, quotechar='"', sep=',', converters={'recipe_features':ast.literal_eval,'ing_ids':ast.literal_eval}, names = ['recipe_id','user_id','recipe_features','ing_ids']).reset_index()
-            print(data.ing_ids)
+            data['ing_ids'] = data['ing_ids'].apply(lambda x: np.array(x +((43-len(x))*[0])))
+            data['recipe_features'] = data['recipe_features'].apply(lambda x: np.array(x))
+
             skipRows += readRows
             n += 1
             yield data
