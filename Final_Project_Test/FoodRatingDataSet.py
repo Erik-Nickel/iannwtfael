@@ -1,6 +1,9 @@
 import tensorflow as tf
 from tensorflow.keras.layers import CategoryEncoding
 import numpy as np
+from DatasetPreprossesing import DatasetPreprossesing
+
+
 
 
 class FoodRatingDataset:
@@ -10,15 +13,16 @@ class FoodRatingDataset:
 
     def __init__(self):
         super(FoodRatingDataset, self).__init__()
-        self.catenc = CategoryEncoding(num_tokens=8023, output_mode="multi_hot")
+        self.new = DatasetPreprossesing()
+        self.new.preprocessing()
+
+        self.dataset = tf.data.Dataset.from_generator(self.new.genData)
+
         
 
-    def prepre(self,id,ing,ofe):
-        #print(ing.shape())
-        print(ing)
-        print(type(ing))
-        return tf.convert_to_tensor(id),self.catenc(tf.convert_to_tensor(ing)),tf.convert_to_tensor(ofe)
-
+    def prepre(self,batchsize = 1):
+        self.dataset = self.dataset.batch(batchsize)
+        return(self.dataset)
 
     def data(self):
         return (None, None, None), None

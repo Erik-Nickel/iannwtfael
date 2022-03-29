@@ -2,6 +2,7 @@ import tensorflow as tf
 import pandas as pd
 import numpy as np
 import ast
+from tensorflow.keras.layers import CategoryEncoding
 
 class DatasetPreprossesing():
     
@@ -51,7 +52,7 @@ class DatasetPreprossesing():
 
             skipRows += readRows
             n += 1
-            yield data
+            yield tf.convert_to_tensor(data.recipe_id.tolist()), CategoryEncoding(num_tokens=8023, output_mode="multi_hot")(tf.convert_to_tensor(data.ing_ids.tolist())), tf.convert_to_tensor(data.recipe_features.tolist())
         
 
 
