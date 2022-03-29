@@ -16,11 +16,11 @@ class FoodRatingDataset:
         self.new = DatasetPreprossesing()
         self.new.preprocessing()
 
-        self.dataset = tf.data.Dataset.from_generator(self.new.genData)
+        self.dataset = tf.data.Dataset.from_generator(self.new.genData,output_signature=(tf.TensorSpec(shape=(10), dtype=tf.int32),tf.TensorSpec(shape=(10,8023), dtype=tf.int32),tf.TensorSpec(shape=(10,3), dtype=tf.int32)))
 
         
 
-    def prepre(self,batchsize = 1):
+    def dataPipeline(self,batchsize = 1):
         self.dataset = self.dataset.batch(batchsize)
         return(self.dataset)
 

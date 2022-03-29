@@ -23,6 +23,6 @@ newnew = FoodRatingDataset()
 
 rec = FoodRecommenderModelSequence(recipe_count=NUM_RECIPES, seq_len=SEQ_LEN)
 
-x = rec(newnew.prepre())
+x = rec(newnew.dataPipeline())
 
 print(x)
