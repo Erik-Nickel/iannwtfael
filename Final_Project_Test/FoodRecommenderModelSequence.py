@@ -33,7 +33,10 @@ class FoodRecommenderModelSequence(tf.keras.Model):
     def train_step(self, data):
         # Unpack the data. Its structure depends on your model and
         # on what you pass to `fit()`.
+        print("DATA:")
         x, y = data
+        print("X:", x)
+        print("Y:", y)
 
         with tf.GradientTape() as tape:
             y_pred = self(x, training=True)  # Forward pass
@@ -50,4 +53,5 @@ class FoodRecommenderModelSequence(tf.keras.Model):
         self.compiled_metrics.update_state(y, y_pred)
         # Return a dict mapping metric names to current value
         return {m.name: m.result() for m in self.metrics}
+
 

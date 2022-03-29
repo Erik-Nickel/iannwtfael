@@ -28,12 +28,19 @@ class TestDataset:
         return id, self.catenc(ing), ofe
 
     def data(self):
-        return tf.data.Dataset.from_tensor_slices((self.__ids, self.ing_mht(), self.__ohter, self.__target))
-        # return (None, None, None), None
+        data = tf.data.Dataset.from_tensor_slices((self.__ids, self.ing_mht(), self.__ohter))
+        label = tf.data.Dataset.from_tensor_slices(self.__target)
+        return tf.data.Dataset.zip((data, label)).apply(prepare_data)  # (None, None, None), None
 
     def ing_mht(self):
         return [[self.catenc(i) for i in self.__ingr[0]]]
 
 
+def prepare_data(ds):
+    return ds.batch(32)
+
+
 ds = TestDataset()
-print(ds.data())
+for (d, v) in ds.data():
+    print(d)
+# print(ds.data())
