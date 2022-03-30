@@ -22,7 +22,7 @@ class FoodRatingDataset:
 
         self.dataset = tf.data.Dataset.from_generator(self.new.genData,output_signature=((tf.TensorSpec(shape=(1,9), dtype=tf.int32),tf.TensorSpec(shape=(1,9,8023), dtype=tf.int32),tf.TensorSpec(shape=(1,9,3), dtype=tf.int32)),tf.TensorSpec(shape=(1))))
         #print(dir(self.dataset))
-        print(self.dataset)
+        #print(self.dataset)
         
 
     def dataPipeline(self,batchsize = 1):

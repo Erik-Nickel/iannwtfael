@@ -1,3 +1,4 @@
+import gc
 import tensorflow as tf
 import pandas as pd
 import numpy as np
@@ -34,10 +35,13 @@ class DatasetPreprossesing():
 
         omni_raw.to_csv('data_pp.csv')
         
+    
         self.num_inter = omni_raw['user_id'].value_counts(sort = False).to_numpy()
         #print(self.num_inter)
         #print(omni_raw['user_id'].value_counts(sort = False))
-     
+
+        del omni_raw
+        gc.collect()
 
         
     

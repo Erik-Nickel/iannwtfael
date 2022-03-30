@@ -12,8 +12,8 @@ class FoodRecommenderModelSequence(tf.keras.Model):
         #self.optimizer = tf.keras.optimizers.Adam(learning_rate=0.01)
         self.max_seq_len = seq_len
         self.num_ids = recipe_count
-        self.embedding = RecipeEmbedding(id_embedding_size=128*128, num_ids=self.num_ids, ingredient_embedding_size=128*128,
-                                         other_features_embedding_size=128*128, sequence_length=self.max_seq_len)
+        self.embedding = RecipeEmbedding(id_embedding_size=16, num_ids=self.num_ids, ingredient_embedding_size=128,
+                                         other_features_embedding_size=32, sequence_length=self.max_seq_len)
         self.encoder = RecommenderEncoder(self.embedding.emb_size())
         self.pooling = GlobalMaxPool1D()  # or flatten
         self.out = Dense(self.num_ids)
