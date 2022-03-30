@@ -2,6 +2,7 @@ import tensorflow as tf
 import pandas as pd
 import numpy as np
 import ast
+from tensorflow.keras.layers import CategoryEncoding
 
 class DatasetPreprossesing():
     
@@ -40,18 +41,23 @@ class DatasetPreprossesing():
 
         
     
-    def genData(self,):
-        skipRows = 0
+    def genData(self,windowsSize = 10,stepSize = 1):
+        skipRows = stepSize 
+        readRows = windowsSize
         n = 0
         while n <5: 
-            readRows = self.num_inter[n]
-            data = pd.read_csv('data_pp.csv',skiprows=skipRows + 1 , nrows=readRows, header = None, quotechar='"', sep=',', converters={'recipe_features':ast.literal_eval,'ing_ids':ast.literal_eval}, names = ['recipe_id','user_id','recipe_features','ing_ids']).reset_index()
-            data['ing_ids'] = data['ing_ids'].apply(lambda x: np.array(x +((43-len(x))*[0])))
-            data['recipe_features'] = data['recipe_features'].apply(lambda x: np.array(x))
+            m = 0
+            while m < self.num_inter[n]+1 - readRows:
+                data = pd.read_csv('data_pp.csv',skiprows=skipRows + 1 , nrows=readRows, header = None, quotechar='"', sep=',', converters={'recipe_features':ast.literal_eval,'ing_ids':ast.literal_eval}, names = ['recipe_id','user_id','recipe_features','ing_ids']).reset_index()
+                data['ing_ids'] = data['ing_ids'].apply(lambda x: np.array(x +((43-len(x))*[0])))
+                data['recipe_features'] = data['recipe_features'].apply(lambda x: np.array(x))
 
-            skipRows += readRows
+            #skipRows += readRows
+                skipRows += 1
+                yield (tf.convert_to_tensor([data.recipe_id.tolist()[:-1]]), tf.convert_to_tensor([CategoryEncoding(num_tokens=8023, output_mode="multi_hot")(data.ing_ids.tolist()[:-1])]), tf.convert_to_tensor([data.recipe_features.tolist()[:-1]])),tf.convert_to_tensor([data.recipe_id.tolist()[-1]])
+            
             n += 1
-            yield data
+            
         
 
 
