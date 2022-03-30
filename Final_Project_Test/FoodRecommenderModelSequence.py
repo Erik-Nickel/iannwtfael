@@ -10,7 +10,7 @@ class FoodRecommenderModelSequence(tf.keras.Model):
         super(FoodRecommenderModelSequence, self).__init__()
         self.max_seq_len = seq_len
         self.num_ids = recipe_count
-        self.embedding = RecipeEmbedding(id_embedding_size=16, num_ids=self.num_ids, ingredient_embedding_size=128,
+        self.embedding = RecipeEmbedding(id_embedding_size=32, num_ids=self.num_ids, ingredient_embedding_size=128,
                                          other_features_embedding_size=32, sequence_length=self.max_seq_len)
         self.encoder = RecommenderEncoder(self.embedding.emb_size())
         self.pooling = GlobalMaxPool1D()  # or flatten
@@ -20,7 +20,6 @@ class FoodRecommenderModelSequence(tf.keras.Model):
         x = self.embedding(inputs, positional=True)
         x = self.encoder(x, training)
         x = self.pooling(x)  # or flatten
-        # more layers?
         x = self.out(x)
         return x
 
