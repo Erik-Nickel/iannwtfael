@@ -32,7 +32,7 @@ print("DATA: ", data)
 #ids, ing, ofe = tf.keras.Input(shape=[20]), tf.keras.Input(shape=[20, 6000]), tf.keras.Input(shape=[20, 3])
 
 rec = FoodRecommenderModelSequence(recipe_count=NUM_RECIPES, seq_len=SEQ_LEN)
-rec.compile(loss=tf.keras.losses.MeanSquaredError(), optimizer=tf.keras.optimizers.Adam(learning_rate=0.01), metrics=['accuracy'])
+rec.compile(loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True), optimizer=tf.keras.optimizers.Adam(learning_rate=0.01), metrics=['accuracy'])
 #x = rec(data)
 rec.fit(data, epochs=10)
 #print(x)
