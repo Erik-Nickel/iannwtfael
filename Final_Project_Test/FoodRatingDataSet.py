@@ -20,7 +20,10 @@ class FoodRatingDataset:
         self.new = DatasetPreprossesing()
         self.new.preprocessing()
 
-        self.dataset = tf.data.Dataset.from_generator(self.new.genData,output_signature=((tf.TensorSpec(shape=(1, 9), dtype=tf.int32),tf.TensorSpec(shape=(1,9,8023), dtype=tf.int32),tf.TensorSpec(shape=(1,9,3), dtype=tf.int32)),tf.TensorSpec(shape=(1), dtype=tf.int32)))
+
+
+        self.dataset = tf.data.Dataset.from_generator(self.new.genData,output_signature=((tf.TensorSpec(shape=(1,9), dtype=tf.int32),tf.TensorSpec(shape=(1,9,8023), dtype=tf.int32),tf.TensorSpec(shape=(1,9,3), dtype=tf.int32)),tf.TensorSpec(shape=(1), dtype=tf.int32)))
+
         #print(dir(self.dataset))
         #print(self.dataset)
         
