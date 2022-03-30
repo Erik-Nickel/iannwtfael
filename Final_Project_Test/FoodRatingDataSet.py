@@ -20,7 +20,7 @@ class FoodRatingDataset:
         self.new = DatasetPreprossesing()
         self.new.preprocessing()
 
-        self.dataset = tf.data.Dataset.from_generator(self.new.genData,output_signature=((tf.TensorSpec(shape=(1, 9), dtype=tf.int32),tf.TensorSpec(shape=(1,9,8023), dtype=tf.int32),tf.TensorSpec(shape=(1,9,3), dtype=tf.int32)),tf.TensorSpec(shape=(1), dtype=tf.int32)))
+        self.dataset = tf.data.Dataset.from_generator(self.new.genData,output_signature=((tf.TensorSpec(shape=(9), dtype=tf.int32),tf.TensorSpec(shape=(9,8023), dtype=tf.int32),tf.TensorSpec(shape=(9,3), dtype=tf.int32)),tf.TensorSpec(shape=(), dtype=tf.int32)))
         #print(dir(self.dataset))
         #print(self.dataset)
         
@@ -30,8 +30,8 @@ class FoodRatingDataset:
         return(self.dataset)
 
     def data(self):
-        print(self.dataset)
-        print(self.dataset.batch(1)) # (None, None, None), None
-        return self.dataset #.batch(1) # (None, None, None), None
+       # print(self.dataset)
+        #print(self.dataset.batch(1)) # (None, None, None), None
+        return self.dataset.batch(10) # (None, None, None), None
 
     # tf.reduce_max(tf.one_hot(labels, num_classes, dtype=tf.int32), axis=0)
