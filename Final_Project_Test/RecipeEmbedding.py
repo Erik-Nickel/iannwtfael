@@ -30,8 +30,9 @@ class RecipeEmbedding(Layer):
         x_id = self.recipy_id_embedding(recipe_id)
         if positional:
             positions = tf.range(start=0, limit=self.sequence_length)
+            positions = tf.expand_dims(positions, axis=0)
+            positions = tf.repeat(positions, tf.shape(positions)[0], axis=0)
             embedded_positions = self.position_embedding(positions)
-            embedded_positions = tf.expand_dims(embedded_positions, axis=0)  # TODO: just for batch size 1
             print("id_pre:", x_id)
             print("POS_emb:", embedded_positions)
             x_id = self.add([x_id, embedded_positions])
