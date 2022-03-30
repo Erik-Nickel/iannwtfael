@@ -24,8 +24,11 @@ class DatasetPreprossesing():
         omni_raw['recipe_features'] = omni_raw[['minutes','n_steps','n_ingredients']].values.tolist()
 
         omni_raw = omni_raw.drop(['minutes','n_steps','n_ingredients', 'name', 'contributor_id', 'submitted', 'tags', 'nutrition', 'steps', 'description', 'review', 'ingredients'], axis=1)
-        omni_raw = pd.merge(omni_raw,recipies_pp.drop(['i','name_tokens','steps_tokens','techniques','calorie_level', 'ingredient_tokens',],axis = 1),on='recipe_id')
-        
+        omni_raw = pd.merge(omni_raw,recipies_pp.drop(['name_tokens','steps_tokens','techniques','calorie_level', 'ingredient_tokens',],axis = 1),on='recipe_id')
+        omni_raw["recipe_id"] = omni_raw['i']
+        omni_raw.pop('i')
+        #print(omni_raw.describe())
+
         counts = omni_raw.value_counts('user_id')
         omni_raw = omni_raw[omni_raw.rating >= 4].drop(['rating'], axis = 1)
         omni_raw = omni_raw.loc[omni_raw['user_id'].isin(counts.index[counts >= 6])]
@@ -58,7 +61,7 @@ class DatasetPreprossesing():
 
             #skipRows += readRows
                 skipRows += 1
-                yield (tf.convert_to_tensor([data.recipe_id.tolist()[:-1]]), tf.convert_to_tensor([CategoryEncoding(num_tokens=8023, output_mode="multi_hot")(data.ing_ids.tolist()[:-1])]), tf.convert_to_tensor([data.recipe_features.tolist()[:-1]])),tf.convert_to_tensor([data.recipe_id.tolist()[-1]])
+                yield (tf.convert_to_tensor([CategoryEncoding(num_tokens=178265, output_mode="one_hot")(data.recipe_id.tolist()[:-1])]), tf.convert_to_tensor([CategoryEncoding(num_tokens=8023, output_mode="multi_hot")(data.ing_ids.tolist()[:-1])]), tf.convert_to_tensor([data.recipe_features.tolist()[:-1]])),tf.convert_to_tensor(CategoryEncoding(num_tokens=178265, output_mode="one_hot")(data.recipe_id.tolist()[-1]))
             
             n += 1
             
