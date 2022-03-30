@@ -27,16 +27,21 @@ class RecipeEmbedding(Layer):
 
     def call(self, inputs, training=False, positional=False):
         recipe_id, ing, other_features = inputs
+        # TODO: convert Ingredience list to multy hot
+        # tf.reduce_max(tf.one_hot(labels, num_classes, dtype=tf.int32), axis=0)
+        # x_id = self.flatten(x_id)
         x_id = self.recipy_id_embedding(recipe_id)
         if positional:
             positions = tf.range(start=0, limit=self.sequence_length)
             embedded_positions = self.position_embedding(positions)
-            embedded_positions = tf.expand_dims(embedded_positions, axis=0)  # TODO: just for batch size 1
-            print("id_pre:", x_id)
+            print("x_id_pre:", x_id)
             print("POS_emb:", embedded_positions)
             x_id = self.add([x_id, embedded_positions])
         x_ing = self.ingredient_embedding(ing)
         x_o = self.other_features_embedding(other_features)
+        print("x_id:",x_id)
+        print("x_ing:", x_ing)
+        print("x_o:", x_o)
         x = self.concat([x_id, x_ing, x_o])
         x = self.out(x)
         return x

@@ -61,7 +61,7 @@ class DatasetPreprossesing():
 
             #skipRows += readRows
                 skipRows += 1
-                yield (tf.convert_to_tensor([data.recipe_id.tolist()[:-1]]), tf.convert_to_tensor([CategoryEncoding(num_tokens=8023, output_mode="multi_hot")(data.ing_ids.tolist()[:-1])]), tf.convert_to_tensor([data.recipe_features.tolist()[:-1]])),tf.convert_to_tensor(CategoryEncoding(num_tokens=178265, output_mode="one_hot")(data.recipe_id.tolist()[-1]))
+                yield (tf.convert_to_tensor([data.recipe_id.tolist()[:-1]]), tf.convert_to_tensor([CategoryEncoding(num_tokens=8023, output_mode="multi_hot")(data.ing_ids.tolist()[:-1])]), tf.convert_to_tensor([data.recipe_features.tolist()[:-1]])),tf.convert_to_tensor([data.recipe_id.tolist()[-1]])
             
             n += 1
             
