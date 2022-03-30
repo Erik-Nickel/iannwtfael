@@ -10,7 +10,9 @@ from FoodRatingDataSet import FoodRatingDataset
 
 NUM_ING = 8023
 OTHER_FEATURES = 3
-NUM_RECIPES = 178265
+
+NUM_RECIPES = 178265 #163690 #161880
+
 
 BATCHSIZE = 1
 
