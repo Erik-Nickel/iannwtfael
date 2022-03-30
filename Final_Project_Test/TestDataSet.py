@@ -2,7 +2,7 @@ from tensorflow.keras.layers import CategoryEncoding
 import tensorflow as tf
 
 
-class TestDataset:
+class TestDataSet:
     NUM_ING = 20
     OTHER_FEATURES = 3
     NUM_RECIPES = 161880
@@ -21,7 +21,7 @@ class TestDataset:
     __target = [99]
 
     def __init__(self):
-        super(TestDataset, self).__init__()
+        super(TestDataSet, self).__init__()
         self.catenc = CategoryEncoding(num_tokens=self.NUM_ING, output_mode="multi_hot")
 
     def __call__(self, id, ing, ofe):
@@ -40,7 +40,7 @@ def prepare_data(ds):
     return ds.batch(32)
 
 
-ds = TestDataset()
+ds = TestDataSet()
 for (d, v) in ds.data():
     print(d)
 # print(ds.data())

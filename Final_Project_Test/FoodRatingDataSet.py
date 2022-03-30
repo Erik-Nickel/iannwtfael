@@ -6,18 +6,23 @@ from DatasetPreprossesing import DatasetPreprossesing
 
 
 
+
 class FoodRatingDataset:
     NUM_ING = 8023
     OTHER_FEATURES = 3
     NUM_RECIPES = 161880
+
+    
+
 
     def __init__(self):
         super(FoodRatingDataset, self).__init__()
         self.new = DatasetPreprossesing()
         self.new.preprocessing()
 
-        self.dataset = tf.data.Dataset.from_generator(self.new.genData,output_signature=(tf.TensorSpec(shape=(10), dtype=tf.int32),tf.TensorSpec(shape=(10,8023), dtype=tf.int32),tf.TensorSpec(shape=(10,3), dtype=tf.int32)))
-
+        self.dataset = tf.data.Dataset.from_generator(self.new.genData,output_signature=((tf.TensorSpec(shape=(1,9), dtype=tf.int32),tf.TensorSpec(shape=(1,9,8023), dtype=tf.int32),tf.TensorSpec(shape=(1,9,3), dtype=tf.int32)),tf.TensorSpec(shape=(1))))
+        #print(dir(self.dataset))
+        print(self.dataset)
         
 
     def dataPipeline(self,batchsize = 1):
@@ -25,6 +30,6 @@ class FoodRatingDataset:
         return(self.dataset)
 
     def data(self):
-        return (None, None, None), None
+        return self.dataset.batch(1) # (None, None, None), None
 
     # tf.reduce_max(tf.one_hot(labels, num_classes, dtype=tf.int32), axis=0)
