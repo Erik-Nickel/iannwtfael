@@ -39,8 +39,6 @@ class TestDataSet:
 def prepare_data(ds):
     return ds.batch(32)
 
-
-ds = TestDataSet()
-for (d, v) in ds.data():
-    print(d)
-# print(ds.data())
+# ds = TestDataSet()
+# for (d, v) in ds.data():
+#    print(d)
