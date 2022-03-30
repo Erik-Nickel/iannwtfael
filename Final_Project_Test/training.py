@@ -24,7 +24,7 @@ SEQ_LEN = 9
 
 print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~newnew~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
 newnew = FoodRatingDataset()
-print(newnew.data())
+#print(newnew.data())
 data = newnew.data()
 
 
