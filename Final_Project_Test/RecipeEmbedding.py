@@ -24,6 +24,7 @@ class RecipeEmbedding(Layer):
         self.concat = Concatenate(axis=-1)
         self.out = Dense(output_size)  # softmax if not Spars CE loss
 
+    @tf.function
     def call(self, inputs, training=False, positional=False):
         recipe_id, ing, other_features = inputs
         x_id = self.recipy_id_embedding(recipe_id)

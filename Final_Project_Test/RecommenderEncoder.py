@@ -9,6 +9,7 @@ class RecommenderEncoder(Layer):
         super(RecommenderEncoder, self).__init__()
         self.transformer = TransformerLayer(embedding_size, 4, 128)
 
+    @tf.function
     def call(self, inputs, training=False):
         # TODO: Padding Mask?
         x = self.transformer(inputs, inputs, training)

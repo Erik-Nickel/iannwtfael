@@ -16,6 +16,7 @@ class FoodRecommenderModelSequence(tf.keras.Model):
         self.pooling = GlobalMaxPool1D()  # or flatten
         self.out = Dense(self.num_ids)
 
+    @tf.function
     def call(self, inputs, training=False):
         x = self.embedding(inputs, positional=True)
         x = self.encoder(x, training)
