@@ -5,9 +5,9 @@ from TransformerLayer import TransformerLayer
 
 class RecommenderEncoder(Layer):
 
-    def __init__(self, embedding_size):
+    def __init__(self, embedding_size, hidden_size):
         super(RecommenderEncoder, self).__init__()
-        self.transformer = TransformerLayer(embedding_size, 4, 128)
+        self.transformer = TransformerLayer(output_size=embedding_size, hidden_size=hidden_size)
 
     @tf.function
     def call(self, inputs, training=False):
