@@ -43,11 +43,13 @@ class DatasetPreprossesing():
 
         #self.data = omni_raw
         #self.data = self.data.drop(['index','user_id'], axis = 1)
-
-        #self.data = pd.read_csv('data_pp.csv', quotechar='"', sep=',', converters={'recipe_features':ast.literal_eval,'ingredient_ids':ast.literal_eval}, usecols= ['recipe_id','recipe_features','ingredient_ids']).reset_index()
-        #self.data['ingredient_ids'] = self.data['ingredient_ids'].apply(lambda x: CategoryEncoding(num_tokens=8023, output_mode="multi_hot")(x))
-        #self.data['recipe_features'] = self.data['recipe_features'].apply(lambda x: np.array(x))
-        
+        print(0)
+        self.data = pd.read_csv('data_pp.csv', quotechar='"', sep=',', converters={'recipe_features':ast.literal_eval,'ingredient_ids':ast.literal_eval}, usecols= ['recipe_id','recipe_features','ingredient_ids']).reset_index()
+        print(1)
+        self.data['ingredient_ids'] = self.data['ingredient_ids'].apply(lambda x: CategoryEncoding(num_tokens=8023, output_mode="multi_hot")(x))
+        print(2)
+        self.data['recipe_features'] = self.data['recipe_features'].apply(lambda x: np.array(x))
+        print(3)
         #print(self.num_inter)
         #print(omni_raw['user_id'].value_counts(sort = False))
 
@@ -60,7 +62,7 @@ class DatasetPreprossesing():
         skipRows = 0 
         readRows = windowsSize
         n = 0
-        while True: 
+        while n < len(self.num_inter): 
             m = 1
             while m < self.num_inter[n] - readRows:
                 data = pd.read_csv('data_pp.csv',skiprows=skipRows + m , nrows=readRows, header = None, quotechar='"', sep=',', converters={'recipe_features':ast.literal_eval,'ing_ids':ast.literal_eval}, names = ['recipe_id','user_id','recipe_features','ing_ids']).reset_index()
@@ -94,7 +96,7 @@ class DatasetPreprossesing():
                 
                 m += 1
                 
-                yield (tf.convert_to_tensor(data_user_window.recipe_id.tolist()[:-1]), tf.convert_to_tensor(data_user_window.ingredient_ids.tolist()[:-1]), tf.convert_to_tensor(data_user_window.recipe_features.tolist()[:-1])),tf.convert_to_tensor(data.recipe_id.tolist()[-1])
+                yield (tf.convert_to_tensor(data_user_window.recipe_id.tolist()[:-1]), tf.convert_to_tensor(data_user_window.ingredient_ids.tolist()[:-1]), tf.convert_to_tensor(data_user_window.recipe_features.tolist()[:-1])),tf.convert_to_tensor(data_user_window.recipe_id.tolist()[-1])
                 del data_user_window
                 gc.collect()
             from_index += to_index 
