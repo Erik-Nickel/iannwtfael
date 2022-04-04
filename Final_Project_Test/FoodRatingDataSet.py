@@ -24,10 +24,12 @@ class FoodRatingDataset:
 
       
 
+    def dataPipeline(self,batchsize = 1):
+        self.dataset = self.dataset.batch(batchsize)
+        return(self.dataset)
 
-
-    def data(self,btchsz = 32):
+    def data(self):
       
-        return self.dataset.batch(btchsz).prefetch(64)#.shuffle(32)   # # # (None, None, None), None
+        return self.dataset.batch(10) # (None, None, None), None
 
     
