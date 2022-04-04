@@ -40,16 +40,16 @@ class DatasetPreprossesing():
         self.num_inter = omni_raw['user_id'].value_counts(sort = False).to_numpy()
         
         
-
+        self.catEnc = CategoryEncoding(num_tokens=8023, output_mode="multi_hot")
         #self.data = omni_raw
         #self.data = self.data.drop(['index','user_id'], axis = 1)
-        print(0)
-        self.data = pd.read_csv('data_pp.csv', quotechar='"', sep=',', converters={'recipe_features':ast.literal_eval,'ingredient_ids':ast.literal_eval}, usecols= ['recipe_id','recipe_features','ingredient_ids']).reset_index()
-        print(1)
-        self.data['ingredient_ids'] = self.data['ingredient_ids'].apply(lambda x: CategoryEncoding(num_tokens=8023, output_mode="multi_hot")(x))
-        print(2)
-        self.data['recipe_features'] = self.data['recipe_features'].apply(lambda x: np.array(x))
-        print(3)
+        #print(0)
+        #self.data = pd.read_csv('data_pp.csv', quotechar='"', sep=',', converters={'recipe_features':ast.literal_eval,'ingredient_ids':ast.literal_eval}, usecols= ['recipe_id','recipe_features','ingredient_ids']).reset_index()
+        #print(1)
+        #self.data['ingredient_ids'] = self.data['ingredient_ids'].apply(lambda x: self.catEnc(x))
+        #print(2)
+        #self.data['recipe_features'] = self.data['recipe_features'].apply(lambda x: np.array(x))
+        #print(3)
         #print(self.num_inter)
         #print(omni_raw['user_id'].value_counts(sort = False))
 
@@ -92,7 +92,8 @@ class DatasetPreprossesing():
             to_index = self.num_inter[n]+1
             data_user = self.data.iloc[from_index:to_index]
             while m < self.num_inter[n]+1 - readRows:
-                data_user_window = data_user.iloc[m:m+readRows+1]
+                data_user_window = data_user.iloc[m:m+readRows]
+                data_user_window.ingredient_ids = data_user_window.ingredient_ids.apply(lambda x: self.catEnc(x))
                 
                 m += 1
                 
