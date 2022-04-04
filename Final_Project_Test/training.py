@@ -10,14 +10,10 @@ NUM_RECIPES = 178265  # 163690 #161880
 NUM_ING = 8023
 OTHER_FEATURES = 3
 SEQ_LEN = 9
-BATCH_SIZE = 64
+BATCH_SIZE = 178265 #64
 
 
-# ds = TestDataSet()
-# rec = FoodRecommenderModelSequence(recipe_count=NUM_RECIPES, seq_len=SEQ_LEN)
-# for (d, v) in ds.data():
-#    x = rec(d)
-#    print(x)
+
 
 
 def model_summary():
