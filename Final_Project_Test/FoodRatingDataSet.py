@@ -22,14 +22,10 @@ class FoodRatingDataset:
         self.dataset = tf.data.Dataset.from_generator(self.new.genData,output_signature=((tf.TensorSpec(shape=(9), dtype=tf.int32),tf.TensorSpec(shape=(9,8023), dtype=tf.int32),tf.TensorSpec(shape=(9,3), dtype=tf.int32)),tf.TensorSpec(shape=(), dtype=tf.int32)))
 
 
-      
 
-    def dataPipeline(self,batchsize = 1):
-        self.dataset = self.dataset.batch(batchsize)
-        return(self.dataset)
 
-    def data(self):
+    def data(self,btchsz = 32):
       
-        return self.dataset.batch(10) # (None, None, None), None
+        return self.dataset.batch(btchsz).prefetch(btchsz*6) #.shuffle(btchsz*2) # (None, None, None), None
 
     
