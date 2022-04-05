@@ -8,8 +8,8 @@ from tensorflow.keras.layers import CategoryEncoding
 
 class DatasetPreprossesing():
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self,seq_len) -> None:
+        self.__seq_len = seq_len
 
     def preprocessing(self, dataset1='RAW_interactions.csv', dataset2='RAW_recipes.csv', dataset3='PP_recipes.csv'):
         inter_raw = pd.read_csv(dataset1)
@@ -35,7 +35,7 @@ class DatasetPreprossesing():
 
         counts = omni_raw.value_counts('user_id')
         omni_raw = omni_raw[omni_raw.rating >= 4].drop(['rating'], axis=1)
-        omni_raw = omni_raw.loc[omni_raw['user_id'].isin(counts.index[counts >= 6])]
+        omni_raw = omni_raw.loc[omni_raw['user_id'].isin(counts.index[counts >= 10 ])]
 
         omni_raw = omni_raw.sort_values(['user_id', 'date']).reset_index()
         omni_raw.pop('date')
@@ -45,6 +45,7 @@ class DatasetPreprossesing():
         self.num_inter = omni_raw['user_id'].value_counts(sort = False).to_numpy()
         
         #self.num_inter = self.num_inter[:100]
+        print(len(self.num_inter))
         
         self.catEnc = CategoryEncoding(num_tokens=8023, output_mode="multi_hot")
         #self.data = omni_raw
@@ -63,9 +64,9 @@ class DatasetPreprossesing():
         del omni_raw
         gc.collect()
 
-    def genData(self, windowsSize=10, stepSize=1):
+    def genData(self, seq_len = self.seq_len, stepSize=1,):
         skipRows = 0
-        readRows = windowsSize
+        readRows = seq_len
         n = 0
 
         while n < len(self.num_inter): 

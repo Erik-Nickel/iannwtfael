@@ -15,11 +15,11 @@ class FoodRatingDataset:
     
 
 
-    def __init__(self):
+    def __init__(self, seq_len):
         super(FoodRatingDataset, self).__init__()
-        self.new = DatasetPreprossesing()
+        self.new = DatasetPreprossesing(seq_len + 1)
         self.new.preprocessing()
-        self.dataset = tf.data.Dataset.from_generator(self.new.genData,output_signature=((tf.TensorSpec(shape=(9), dtype=tf.int32),tf.TensorSpec(shape=(9,8023), dtype=tf.int32),tf.TensorSpec(shape=(9,3), dtype=tf.int32)),tf.TensorSpec(shape=(), dtype=tf.int32)))
+        self.dataset = tf.data.Dataset.from_generator(self.new.genData,output_signature=((tf.TensorSpec(shape=(seq_len), dtype=tf.int32),tf.TensorSpec(shape=(seq_len,8023), dtype=tf.int32),tf.TensorSpec(shape=(seq_len,3), dtype=tf.int32)),tf.TensorSpec(shape=(), dtype=tf.int32)))
 
 
 
