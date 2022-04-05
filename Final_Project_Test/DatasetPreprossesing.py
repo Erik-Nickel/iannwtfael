@@ -44,7 +44,7 @@ class DatasetPreprossesing():
 
         self.num_inter = omni_raw['user_id'].value_counts(sort = False).to_numpy()
         
-        self.num_inter = self.num_inter[:100]
+        #self.num_inter = self.num_inter[:100]
         
         self.catEnc = CategoryEncoding(num_tokens=8023, output_mode="multi_hot")
         #self.data = omni_raw
