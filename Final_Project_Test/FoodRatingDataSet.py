@@ -1,10 +1,5 @@
 import tensorflow as tf
-from tensorflow.keras.layers import CategoryEncoding
-import numpy as np
-from DatasetPreprossesing import DatasetPreprossesing
-
-
-
+from DatasetPreprocessing import DatasetPreprocessing
 
 
 class FoodRatingDataset:
@@ -12,21 +7,22 @@ class FoodRatingDataset:
     OTHER_FEATURES = 3
     NUM_RECIPES = 178265
 
-    
-
-
-    def __init__(self, seq_len):
+    def __init__(self, seq_len=9):
         super(FoodRatingDataset, self).__init__()
-        self.new = DatasetPreprossesing(seq_len + 1)
-        self.new.preprocessing()
-        self.data_train = tf.data.Dataset.from_generator(self.new.gen_data_train,output_signature=((tf.TensorSpec(shape=(seq_len), dtype=tf.int32),tf.TensorSpec(shape=(seq_len,8023), dtype=tf.int32),tf.TensorSpec(shape=(seq_len,3), dtype=tf.int32)),tf.TensorSpec(shape=(), dtype=tf.int32)))
-        self.data_val = tf.data.Dataset.from_generator(self.new.gen_data_val,output_signature=((tf.TensorSpec(shape=(seq_len), dtype=tf.int32),tf.TensorSpec(shape=(seq_len,8023), dtype=tf.int32),tf.TensorSpec(shape=(seq_len,3), dtype=tf.int32)),tf.TensorSpec(shape=(), dtype=tf.int32)))
+        self.preprocessing = DatasetPreprocessing(seq_len)
+        self.preprocessing.preprocesses()
+        self.seq_len = seq_len
+        self.data_train = self.gen_dataset(self.preprocessing.gen_data_train)
+        self.data_val = self.gen_dataset(self.preprocessing.gen_data_val)
 
+    def gen_dataset(self, generator):
+        return tf.data.Dataset.from_generator(generator, output_signature=(
+            (tf.TensorSpec(shape=self.seq_len, dtype=tf.int32),
+             tf.TensorSpec(shape=(self.seq_len, self.NUM_ING), dtype=tf.int32),
+             tf.TensorSpec(shape=(self.seq_len, self.OTHER_FEATURES), dtype=tf.int32)),
+            tf.TensorSpec(shape=(), dtype=tf.int32)))
 
-
-
-    def data(self,btchsz = 32):
-      
-        return self.dataset.batch(btchsz).prefetch(btchsz*6) #.shuffle(btchsz*2) # (None, None, None), None
-
-    
+    def data(self, batch_size=256):
+        train = self.data_train.batch(batch_size)
+        val = self.data_val.batch(batch_size)
+        return train, val
