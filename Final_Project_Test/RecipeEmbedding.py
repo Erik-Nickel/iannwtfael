@@ -28,8 +28,8 @@ class RecipeEmbedding(Layer):
         recipe_id, ing, other_features = inputs
         x_id = self.recipy_id_embedding(recipe_id)
         x_ing = self.ingredient_embedding(ing)
-        x_o = self.other_features_embedding(other_features)
-        x = self.concat([x_id, x_ing, x_o])
+        # x_o = self.other_features_embedding(other_features) TODO: activate if normalized
+        x = self.concat([x_id, x_ing])  # , x_o])
         x = self.out(x)
         if positional:
             positions = tf.range(start=0, limit=self.sequence_length)
