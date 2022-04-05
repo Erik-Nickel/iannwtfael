@@ -57,8 +57,8 @@ class DatasetPreprocessing:
         data_train.to_csv(self.__TRAIN_DATA_PATH)
         data_val.to_csv(self.__VAL_DATA_PATH)
 
-        self.num_train = omni_raw['user_id'].value_counts(sort=False).to_numpy()
-        self.num_val = omni_raw['user_id'].value_counts(sort=False).to_numpy()
+        self.num_train = data_train['user_id'].value_counts(sort=False).to_numpy()
+        self.num_val = data_val['user_id'].value_counts(sort=False).to_numpy()
 
         # self.num_inter = self.num_inter[:100]
 
