@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import ast
 from tensorflow.keras.layers import CategoryEncoding
+import random
 
 
 class DatasetPreprocessing:
@@ -44,6 +45,10 @@ class DatasetPreprocessing:
 
         omni_raw = omni_raw.sort_values(['user_id', 'date']).reset_index()
         omni_raw.pop('date')
+
+        ids = omni_raw["user_id"].unique()
+        random.shuffle(ids)
+        omni_raw = omni_raw.set_index("user_id").loc[ids].reset_index()
 
         num_inter = omni_raw['user_id'].value_counts(sort=False).to_numpy()
         n = 0
