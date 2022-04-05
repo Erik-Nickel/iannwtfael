@@ -9,7 +9,7 @@ from tensorflow.keras.layers import CategoryEncoding
 class DatasetPreprocessing:
     __TRAIN_DATA_PATH = 'data_train.csv'
     __VAL_DATA_PATH = 'data_val.csv'
-    num_inter = None
+    
 
     def __init__(self, seq_len) -> None:
         self.seq_len = seq_len
@@ -45,23 +45,33 @@ class DatasetPreprocessing:
         omni_raw = omni_raw.sort_values(['user_id', 'date']).reset_index()
         omni_raw.pop('date')
 
-        data_train, data_val = np.split(omni_raw.sample(frac=1, random_state=42), [int(train_size * len(omni_raw))])
+        num_inter = omni_raw['user_id'].value_counts(sort=False).to_numpy()
+        n = 0
+        for i in num_inter:
+            if   n < train_size * len(omni_raw):
+                n += i 
+            else:
+                break
+        data_train, data_val = omni_raw.iloc[:n],omni_raw.iloc[n:]
+        
         data_train.to_csv(self.__TRAIN_DATA_PATH)
         data_val.to_csv(self.__VAL_DATA_PATH)
 
-        self.num_inter = omni_raw['user_id'].value_counts(sort=False).to_numpy()
+        self.num_train = omni_raw['user_id'].value_counts(sort=False).to_numpy()
+        self.num_val = omni_raw['user_id'].value_counts(sort=False).to_numpy()
+
         # self.num_inter = self.num_inter[:100]
 
         del omni_raw
         gc.collect()
 
-    def gen_data(self, data_file_path):
+    def gen_data(self, data_file_path, number_of_inter):
         skip_rows = 0
         read_rows = self.seq_len + 1
         n = 0
-        while n < len(self.num_inter):
+        while n < len(number_of_inter):
             m = 1
-            while m < self.num_inter[n] - read_rows:
+            while m < number_of_inter[n] - read_rows:
                 data = pd.read_csv(data_file_path, skiprows=skip_rows + m, nrows=read_rows, header=None, quotechar='"',
                                    sep=',',
                                    converters={'recipe_features': ast.literal_eval, 'ing_ids': ast.literal_eval},
@@ -75,11 +85,11 @@ class DatasetPreprocessing:
                        tf.convert_to_tensor(data.ing_ids.tolist()[:-1]),
                        tf.convert_to_tensor(data.recipe_features.tolist()[:-1])), tf.convert_to_tensor(
                     data.recipe_id.tolist()[-1])
-            skip_rows += self.num_inter[n]
+            skip_rows += number_of_inter[n]
             n += 1
 
     def gen_data_train(self):
-        return self.gen_data(self.__TRAIN_DATA_PATH)
+        return self.gen_data(self.__TRAIN_DATA_PATH,self.num_train)
 
     def gen_data_val(self):
-        return self.gen_data(self.__VAL_DATA_PATH)
+        return self.gen_data(self.__VAL_DATA_PATH.self.num_val)
