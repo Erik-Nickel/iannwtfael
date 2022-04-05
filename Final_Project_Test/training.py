@@ -10,10 +10,7 @@ NUM_RECIPES = 178265  # 163690 #161880
 NUM_ING = 8023
 OTHER_FEATURES = 3
 SEQ_LEN = 9
-BATCH_SIZE = 178265 #64
-
-
-
+BATCH_SIZE = 178265  # 64
 
 
 def model_summary():
@@ -45,13 +42,13 @@ def train(data, model):
     tensorboard = TensorBoard(log_dir=f"logs/recommend_{board_file_name}")
     checkpoints = ModelCheckpoint(filepath=checkpoints_dir, save_weights_only=True)
 
-    # model.fit(data, epochs=10, validation_split=0.3, callbacks=[tensorboard, checkpoints])
-    model.fit(data, epochs=10, callbacks=[tensorboard, checkpoints])
+    (train_ds, val_ds) = data
+    model.fit(train_ds, validation_data=val_ds, epochs=10, callbacks=[tensorboard, checkpoints])
 
 
 def run():
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TRAINING~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-    dataset = FoodRatingDataset()
+    dataset = FoodRatingDataset(seq_len=SEQ_LEN)
     data = dataset.data()
     print("DATA: ", data)
     model_summary()
