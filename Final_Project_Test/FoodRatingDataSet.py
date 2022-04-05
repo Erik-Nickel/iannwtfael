@@ -27,6 +27,6 @@ class FoodRatingDataset:
 
     def data(self,btchsz = 32):
       
-        return self.dataset.batch(btchsz).prefetch(btchsz*6) #.shuffle(btchsz*2) # (None, None, None), None
+        return (self.data_train.batch(btchsz).prefetch(btchsz*6),self.data_val  .batch(btchsz).prefetch(btchsz*6) #.shuffle(btchsz*2) # (None, None, None), None
 
     
