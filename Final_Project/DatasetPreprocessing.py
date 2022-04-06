@@ -80,7 +80,7 @@ class DatasetPreprocessing:
             while m < number_of_inter[n] - read_rows:
                 data = pd.read_csv(data_file_path, skiprows=skip_rows + m, nrows=read_rows, header=None, quotechar='"',
                                    sep=',',
-                                   converters={'ing_ids': ast.literal_eval},
+                                   converters={'recipe_features': ast.literal_eval, 'ing_ids': ast.literal_eval},
                                    names=['user_id', 'recipe_id', 'recipe_features', 'ing_ids']).reset_index()
                 data['ing_ids'] = data['ing_ids'].apply(lambda x: self.ing_encoding(x))
                 m += 1
