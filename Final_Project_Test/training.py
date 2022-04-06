@@ -51,7 +51,7 @@ def load_wights(model):
 
 
 def run():
-    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TRAINING~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TRAINING~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     dataset = FoodRatingDataset(seq_len=SEQ_LEN)
     data = dataset.data()
     print("DATA: ", data)
