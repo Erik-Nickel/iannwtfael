@@ -15,9 +15,24 @@ class DatasetPreprocessing:
     def __init__(self, seq_len) -> None:
         self.seq_len = seq_len
         self.ing_encoding = CategoryEncoding(num_tokens=8023, output_mode="multi_hot")
+        
+
+    def norm(self,x):
+        return x.apply(lambda i: (i-x.min())/(x.max()-x.min()))
+
+    def user_split(self,df,val,var='user_id' ):
+        num_inter = df[var].value_counts(sort=False).to_numpy()
+        n = 0
+        for i in num_inter:
+            if   n < val * len(df):
+                n += i 
+            else:
+                return n
 
     def preprocesses(self, dataset1='RAW_interactions.csv', dataset2='RAW_recipes.csv', dataset3='PP_recipes.csv',
-                     train_size=0.70):
+                     train_size=0.70,dataset_chunk = 1):
+        self.train_size = train_size
+        self.dataset_chunk = dataset_chunk
         inter_raw = pd.read_csv(dataset1)
         recipes_raw = pd.read_csv(dataset2)
         recipes_pp = pd.read_csv(dataset3)
@@ -26,6 +41,11 @@ class DatasetPreprocessing:
         recipes_raw['recipe_id'] = recipes_raw.pop('id')
 
         omni_raw = pd.merge(recipes_raw, inter_raw, on='recipe_id')
+        
+
+        #omni_raw['minutes'] = self.norm(omni_raw['minutes'])
+        #omni_raw['n_steps'] = self.norm(omni_raw['n_steps'])
+        #omni_raw['n_ingredients'] = self.norm(omni_raw['n_ingredients'])
 
         omni_raw['recipe_features'] = omni_raw[['minutes', 'n_steps', 'n_ingredients']].values.tolist()
 
@@ -49,14 +69,12 @@ class DatasetPreprocessing:
         ids = omni_raw["user_id"].unique()
         random.shuffle(ids)
         omni_raw = omni_raw.set_index("user_id").loc[ids].reset_index()
+        omni_raw.pop('index')
 
-        num_inter = omni_raw['user_id'].value_counts(sort=False).to_numpy()
-        n = 0
-        for i in num_inter:
-            if   n < train_size * len(omni_raw):
-                n += i 
-            else:
-                break
+        omni_raw = omni_raw.iloc[:self.user_split(omni_raw, self.dataset_chunk)] 
+        print(omni_raw)       
+
+        n = self.user_split(omni_raw, self.train_size)
         data_train, data_val = omni_raw.iloc[:n],omni_raw.iloc[n:]
         
         data_train.to_csv(self.__TRAIN_DATA_PATH)
@@ -80,7 +98,7 @@ class DatasetPreprocessing:
                 data = pd.read_csv(data_file_path, skiprows=skip_rows + m, nrows=read_rows, header=None, quotechar='"',
                                    sep=',',
                                    converters={'recipe_features': ast.literal_eval, 'ing_ids': ast.literal_eval},
-                                   names=['recipe_id', 'user_id', 'recipe_features', 'ing_ids']).reset_index()
+                                   names=['user_id', 'recipe_id',  'recipe_features', 'ing_ids']).reset_index()
                 data['ing_ids'] = data['ing_ids'].apply(lambda x: self.ing_encoding(x))
                 # data['recipe_features'] = data['recipe_features'].apply(lambda x: np.array(x))
                 m += 1
