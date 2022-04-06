@@ -72,7 +72,7 @@ class DatasetPreprocessing:
         omni_raw.pop('index')
 
         omni_raw = omni_raw.iloc[:self.user_split(omni_raw, self.dataset_chunk)] 
-        print(omni_raw)       
+        #print(omni_raw)       
 
         n = self.user_split(omni_raw, self.train_size)
         data_train, data_val = omni_raw.iloc[:n],omni_raw.iloc[n:]
