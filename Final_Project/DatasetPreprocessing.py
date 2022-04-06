@@ -82,7 +82,6 @@ class DatasetPreprocessing:
                                    sep=',',
                                    converters={'recipe_features': ast.literal_eval, 'ing_ids': ast.literal_eval},
                                    names=['user_id', 'recipe_id', 'recipe_features', 'ing_ids']).reset_index()
-                data['ing_ids'] = data['ing_ids'].apply(lambda x: self.ing_encoding(x))
                 m += 1
                 yield (
                     tf.convert_to_tensor(data.recipe_id.tolist()[:-1]),
