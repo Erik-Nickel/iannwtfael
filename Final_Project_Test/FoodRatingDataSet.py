@@ -11,7 +11,7 @@ class FoodRatingDataset:
         super(FoodRatingDataset, self).__init__()
 
         self.preprocessing = DatasetPreprocessing(seq_len)
-        self.preprocessing.preprocesses(dataset_chunk = 0.33)
+        self.preprocessing.preprocesses()
         self.seq_len = seq_len
         self.data_train = self.gen_dataset(self.preprocessing.gen_data_train)
         self.data_val = self.gen_dataset(self.preprocessing.gen_data_val)
