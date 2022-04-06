@@ -64,7 +64,7 @@ class DatasetPreprocessing:
         omni_raw = omni_raw.loc[omni_raw['user_id'].isin(counts.index[counts >= 10])]
 
         omni_raw = omni_raw.sort_values(['user_id', 'date']).reset_index()
-        omni_raw.pop('date')
+        #omni_raw.pop('date')
 
         ids = omni_raw["user_id"].unique()
         random.shuffle(ids)

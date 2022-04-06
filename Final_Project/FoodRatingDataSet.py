@@ -21,6 +21,6 @@ class FoodRatingDataset:
         tf.TensorSpec(shape=self.seq_len, dtype=tf.int32), tf.TensorSpec(shape=(), dtype=tf.int32)))
 
     def data(self, batch_size=256):
-        train = self.data_train.batch(batch_size)
-        val = self.data_val.batch(batch_size)
+        train = self.data_train.batch(batch_size).prefetch(512)
+        val = self.data_val.batch(batch_size).prefetch(512)
         return train, val

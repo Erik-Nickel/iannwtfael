@@ -61,12 +61,16 @@ class DatasetPreprocessing:
 
         n = self.user_split(omni_raw, self.train_size)
         data_train, data_val = omni_raw.iloc[:n], omni_raw.iloc[n:]
+        
+        self.num_train = data_train['user_id'].value_counts(sort=False).to_numpy()
+        self.num_val = data_val['user_id'].value_counts(sort=False).to_numpy()
+        
+        data_train, data_val = data_train.pop('user_id'), data_val.pop('user_id')
 
         data_train.to_csv(self.__TRAIN_DATA_PATH)
         data_val.to_csv(self.__VAL_DATA_PATH)
 
-        self.num_train = data_train['user_id'].value_counts(sort=False).to_numpy()
-        self.num_val = data_val['user_id'].value_counts(sort=False).to_numpy()
+
 
         del omni_raw
         gc.collect()
@@ -79,9 +83,7 @@ class DatasetPreprocessing:
             m = 1
             while m < number_of_inter[n] - read_rows:
                 data = pd.read_csv(data_file_path, skiprows=skip_rows + m, nrows=read_rows, header=None, quotechar='"',
-                                   sep=',',
-                                   converters={'recipe_features': ast.literal_eval, 'ing_ids': ast.literal_eval},
-                                   names=['user_id', 'recipe_id', 'recipe_features', 'ing_ids']).reset_index()
+                                   sep=',', names=['recipe_id']).reset_index()
                 m += 1
                 yield (
                     tf.convert_to_tensor(data.recipe_id.tolist()[:-1]),
