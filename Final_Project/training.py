@@ -7,18 +7,14 @@ import tensorflow as tf
 import os.path
 
 NUM_RECIPES = 178265  # 163690 #161880
-NUM_ING = 8023
-OTHER_FEATURES = 3
 SEQ_LEN = 9
-BATCH_SIZE = 178265  # 64
 __CHECKPOINT_DIR = "checkpoints/checkpoint"
 
 
 def model_summary():
     mod = create_model(SEQ_LEN)
-    ids, ing, ofe = tf.keras.Input(shape=[SEQ_LEN]), tf.keras.Input(shape=[SEQ_LEN, NUM_ING]), tf.keras.Input(
-        shape=[SEQ_LEN, OTHER_FEATURES])
-    mod((ids, ing, ofe))
+    ids = tf.keras.Input(shape=[SEQ_LEN])
+    mod(ids)
     mod.summary()
 
 
