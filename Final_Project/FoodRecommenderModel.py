@@ -10,7 +10,7 @@ class FoodRecommenderModel(tf.keras.Model):
         super(FoodRecommenderModel, self).__init__()
         self.max_seq_len = seq_len
         self.num_ids = recipe_count
-        self.embedding = RecipeEmbedding(embedding_size=128, num_ids=self.num_ids, sequence_length=self.max_seq_len)
+        self.embedding = RecipeEmbedding(embedding_size=64, num_ids=self.num_ids, sequence_length=self.max_seq_len)
         self.encoder = RecommenderEncoder(embedding_size=self.embedding.emb_size(), hidden_size=256)
         self.accumulate = Flatten()  # or GlobalPool1D
         self.dene1 = Dense(512, activation=tf.nn.leaky_relu)

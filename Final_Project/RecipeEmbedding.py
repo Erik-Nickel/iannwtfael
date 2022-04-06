@@ -6,6 +6,7 @@ class RecipeEmbedding(Layer):
 
     def __init__(self, embedding_size, num_ids, sequence_length):
         super(RecipeEmbedding, self).__init__()
+        self.sequence_length = sequence_length
         self.output_size = embedding_size
         self.recipy_id_embedding = Embedding(num_ids, embedding_size)
         self.position_embedding = Embedding(sequence_length, embedding_size)
