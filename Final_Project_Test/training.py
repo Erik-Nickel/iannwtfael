@@ -11,6 +11,7 @@ NUM_ING = 8023
 OTHER_FEATURES = 3
 SEQ_LEN = 9
 BATCH_SIZE = 178265  # 64
+__CHECKPOINT_DIR = "checkpoints/checkpoint"
 
 
 def model_summary():
@@ -30,20 +31,23 @@ def train(data, model):
                   optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), metrics=['accuracy'])
 
     board_file_name = datetime.now().strftime("%d%m%Y_%H%M%S")
-    checkpoints_dir = "checkpoints/checkpoint"
 
-    if os.path.exists(checkpoints_dir):
+    if os.path.exists(__CHECKPOINT_DIR):
         print("load model:")
         board_file_name = f"{board_file_name}_loaded"
-        model.load_weights(checkpoints_dir)
+        load_wights(model)
     else:
         print("new model:")
 
     tensorboard = TensorBoard(log_dir=f"logs/recommend_{board_file_name}")
-    checkpoints = ModelCheckpoint(filepath=checkpoints_dir, save_weights_only=True)
+    checkpoints = ModelCheckpoint(filepath=__CHECKPOINT_DIR, save_weights_only=True)
 
     (train_ds, val_ds) = data
     model.fit(train_ds, validation_data=val_ds, epochs=10, callbacks=[tensorboard, checkpoints])
+
+
+def load_wights(model):
+    model.load_weights(__CHECKPOINT_DIR)
 
 
 def run():
