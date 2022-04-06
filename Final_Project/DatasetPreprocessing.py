@@ -65,7 +65,7 @@ class DatasetPreprocessing:
         self.num_train = data_train['user_id'].value_counts(sort=False).to_numpy()
         self.num_val = data_val['user_id'].value_counts(sort=False).to_numpy()
         
-        data_train, data_val = data_train.pop('user_id'), data_val.pop('user_id')
+        data_train, data_val = data_train.pop('recipe_id'), data_val.pop('recipe_id')
 
         data_train.to_csv(self.__TRAIN_DATA_PATH)
         data_val.to_csv(self.__VAL_DATA_PATH)
