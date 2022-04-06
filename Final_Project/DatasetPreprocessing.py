@@ -81,15 +81,17 @@ class DatasetPreprocessing:
         n = 0
         while n < len(number_of_inter):
             m = 1
-            while m < number_of_inter[n] - read_rows:
+            while m < (number_of_inter[n] - read_rows):
                 data = pd.read_csv(data_file_path, skiprows=skip_rows + m, nrows=read_rows, header=None, quotechar='"',
-                                   sep=',', names=['recipe_id']).reset_index()
+                                   sep=',', names=['index','recipe_id']).reset_index()
+                #print(data.recipe_id)
                 m += 1
                 yield (
                     tf.convert_to_tensor(data.recipe_id.tolist()[:-1]),
                     tf.convert_to_tensor(data.recipe_id.tolist()[-1]))
-        skip_rows += number_of_inter[n]
-        n += 1
+
+            skip_rows += number_of_inter[n]
+            n += 1
 
     def gen_data_train(self):
         return self.gen_data(self.__TRAIN_DATA_PATH, self.num_train)
