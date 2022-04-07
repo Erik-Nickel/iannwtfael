@@ -12,15 +12,13 @@ class RecipeEmbedding(Layer):
         self.position_embedding = Embedding(sequence_length, embedding_size)
         self.add = Add()
 
-    @tf.function
-    def call(self, inputs, positional=False):
+    def call(self, inputs):
         x = self.recipy_id_embedding(inputs)
-        if positional:
-            positions = tf.range(start=0, limit=self.sequence_length)
-            positions = tf.expand_dims(positions, axis=0)
-            positions = tf.repeat(positions, tf.shape(x)[0], axis=0)
-            embedded_positions = self.position_embedding(positions)
-            x = self.add([x, embedded_positions])
+        positions = tf.range(start=0, limit=self.sequence_length)
+        positions = tf.expand_dims(positions, axis=0)
+        positions = tf.repeat(positions, tf.shape(x)[0], axis=0)
+        embedded_positions = self.position_embedding(positions)
+        x = self.add([x, embedded_positions])
         return x
 
     def emb_size(self):

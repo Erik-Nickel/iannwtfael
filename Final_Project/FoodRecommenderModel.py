@@ -20,7 +20,7 @@ class FoodRecommenderModel(tf.keras.Model):
 
     @tf.function
     def call(self, inputs, training=False):
-        x = self.embedding(inputs, positional=True)
+        x = self.embedding(inputs)
         x = self.encoder(x, training)
         x = self.accumulate(x)
         x = self.dene1(x)
@@ -28,7 +28,3 @@ class FoodRecommenderModel(tf.keras.Model):
         x = self.dene3(x)
         x = self.out(x)
         return x
-
-    def pad(self, inp):
-        s = self.max_seq_len
-        return inp  # TODO

@@ -4,7 +4,7 @@ import tensorflow as tf
 
 class TransformerLayer(Layer):
 
-    def __init__(self, output_size, hidden_size, attention_heads=4, dropout_rate=0.1, norm_epsilon=1e-6):
+    def __init__(self, output_size, hidden_size, attention_heads=4, dropout_rate=0.2, norm_epsilon=1e-6):
         super(TransformerLayer, self).__init__()
         self.attention = MultiHeadAttention(attention_heads, output_size)
         self.norm1 = LayerNormalization(epsilon=norm_epsilon)

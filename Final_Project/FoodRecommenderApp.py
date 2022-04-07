@@ -46,6 +46,6 @@ if __name__ == "__main__":
             id = None
             recipe_details(id)
         elif command.__eq__('pred'):
-            print("insert 5-9 liked recipes (recipe IDs) as list (e.g: [7, 99, 48, 1000, 4, 9999]): ")
+            print("insert 9 liked recipes (recipe IDs) as list (e.g: [7, 99, 48, 1000, 4, 9999]): ")
             ids = input()
             pred(string_to_list(ids))

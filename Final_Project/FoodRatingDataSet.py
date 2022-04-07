@@ -18,9 +18,9 @@ class FoodRatingDataset:
 
     def gen_dataset(self, generator):
         return tf.data.Dataset.from_generator(generator, output_signature=(
-        tf.TensorSpec(shape=self.seq_len, dtype=tf.int32), tf.TensorSpec(shape=(), dtype=tf.int32)))
+            tf.TensorSpec(shape=self.seq_len, dtype=tf.int32), tf.TensorSpec(shape=(), dtype=tf.int32)))
 
     def data(self, batch_size=256):
-        train = self.data_train.batch(batch_size).prefetch(batch_size*2)
-        val = self.data_val.batch(batch_size).prefetch(batch_size*2)
+        train = self.data_train.shuffle(1000).batch(batch_size).prefetch(batch_size * 2)
+        val = self.data_val.batch(batch_size).prefetch(batch_size * 2)
         return train, val
