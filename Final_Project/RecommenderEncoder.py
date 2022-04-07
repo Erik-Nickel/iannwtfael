@@ -9,7 +9,6 @@ class RecommenderEncoder(Layer):
         super(RecommenderEncoder, self).__init__()
         self.t_layers = [TransformerLayer(output_size=embedding_size, hidden_size=hidden_size) for _ in
                          range(num_layers)]
-        print(self.t_layers)
 
     def call(self, inputs, training=False):
         x = inputs
