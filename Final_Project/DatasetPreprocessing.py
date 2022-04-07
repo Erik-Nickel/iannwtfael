@@ -21,8 +21,8 @@ class DatasetPreprocessing:
             else:
                 return n
 
-    def preprocesses(self, dataset1='RAW_interactions.csv', dataset2='RAW_recipes.csv', dataset3='PP_recipes.csv',
-                     train_size=0.70, dataset_chunk=1):
+    def preprocess(self, dataset1='RAW_interactions.csv', dataset2='RAW_recipes.csv', dataset3='PP_recipes.csv',
+                   train_size=0.70, dataset_chunk=1):
         self.train_size = train_size
         self.dataset_chunk = dataset_chunk
         inter_raw = pd.read_csv(dataset1)
@@ -61,16 +61,14 @@ class DatasetPreprocessing:
 
         n = self.user_split(omni_raw, self.train_size)
         data_train, data_val = omni_raw.iloc[:n], omni_raw.iloc[n:]
-        
+
         self.num_train = data_train['user_id'].value_counts(sort=False).to_numpy()
         self.num_val = data_val['user_id'].value_counts(sort=False).to_numpy()
-        
+
         data_train, data_val = data_train.pop('recipe_id'), data_val.pop('recipe_id')
 
         data_train.to_csv(self.__TRAIN_DATA_PATH)
         data_val.to_csv(self.__VAL_DATA_PATH)
-
-
 
         del omni_raw
         gc.collect()
@@ -83,8 +81,7 @@ class DatasetPreprocessing:
             m = 1
             while m < (number_of_inter[n] - read_rows):
                 data = pd.read_csv(data_file_path, skiprows=skip_rows + m, nrows=read_rows, header=None, quotechar='"',
-                                   sep=',', names=['index','recipe_id']).reset_index()
-                #print(data.recipe_id)
+                                   sep=',', names=['index', 'recipe_id']).reset_index()
                 m += 1
                 yield (
                     tf.convert_to_tensor(data.recipe_id.tolist()[:-1]),

@@ -6,7 +6,7 @@ from datetime import datetime
 import tensorflow as tf
 import os.path
 
-NUM_RECIPES = 178265 
+NUM_RECIPES = 178265
 SEQ_LEN = 9
 __CHECKPOINT_DIR = "checkpoints/checkpoint"
 

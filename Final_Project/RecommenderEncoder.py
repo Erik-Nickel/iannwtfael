@@ -5,12 +5,14 @@ from TransformerLayer import TransformerLayer
 
 class RecommenderEncoder(Layer):
 
-    def __init__(self, embedding_size, hidden_size):
+    def __init__(self, embedding_size, hidden_size, num_layers=3):
         super(RecommenderEncoder, self).__init__()
-        self.transformer = TransformerLayer(output_size=embedding_size, hidden_size=hidden_size)
+        self.t_layers = [TransformerLayer(output_size=embedding_size, hidden_size=hidden_size) for _ in
+                         range(num_layers)]
+        print(self.t_layers)
 
-    @tf.function
     def call(self, inputs, training=False):
-        # TODO: Padding Mask?
-        x = self.transformer(inputs, inputs, training)
+        x = inputs
+        for t in self.t_layers:
+            x = t(x, x, training)
         return x
