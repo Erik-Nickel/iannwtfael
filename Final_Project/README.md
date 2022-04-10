@@ -15,8 +15,6 @@ The requirements for this project can be found in requirements.txt.
 The dataset we used can be found at 'https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactions'.
 We used the 'RAW_interactions.csv', 'RAW_interactions.csv' and 'PP_recipes.csv' to create our dataset.
 
-RAW_recipes.csv
-
 ## Training the model
 The model can be trained when running training.py.
 
